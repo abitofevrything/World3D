@@ -1,4 +1,7 @@
+#Eclipse
 .settings/
-bin/
 .classpath
 .project
+
+#Compiled project
+bin/
