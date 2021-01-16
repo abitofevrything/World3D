@@ -1,0 +1,111 @@
+package me.abitofevrything.world3d.util.cameras;
+
+import me.abitofevrything.world3d.events.input.Input;
+import me.abitofevrything.world3d.events.input.KeyHeldEvent;
+import me.abitofevrything.world3d.events.input.KeyHeldEventListener;
+import me.abitofevrything.world3d.events.input.MouseMovedEvent;
+import me.abitofevrything.world3d.events.input.MouseMovedEventListener;
+import me.abitofevrything.world3d.events.input.MouseScrollEvent;
+import me.abitofevrything.world3d.events.input.MouseScrollEventListener;
+import me.abitofevrything.world3d.util.DisplayManager;
+import me.abitofevrything.world3d.util.SmoothFloat;
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.util.vector.Vector3f;
+
+public class SmoothFreeCamera extends Camera {
+	
+	private static final float PITCH_SENSITIVITY = 0.3f;
+	private static final float YAW_SENSITIVITY = 0.3f;
+
+	private float speed = 10;
+	private float yaw = 0, pitch = 0;
+	private SmoothFloat x, y, z;
+	
+	public SmoothFreeCamera(Vector3f pos) {
+		this.x = new SmoothFloat(pos.x, 10);
+		this.y = new SmoothFloat(pos.y, 10);
+		this.z = new SmoothFloat(pos.z, 10);
+		
+		Input.setMouseGrabbed(true);
+		
+		new MouseMovedEventListener() {
+			@Override
+			public void onEvent(MouseMovedEvent event) {
+				pitch -= event.getDY() * PITCH_SENSITIVITY;
+				if (pitch < -90) {
+					pitch = -90;
+				} else if (pitch > 90) {
+					pitch = 90;
+				}
+				
+				yaw += event.getDX() * YAW_SENSITIVITY;
+				yaw %= 360;
+			}
+		}.listen();
+		
+		new KeyHeldEventListener() {
+			
+			@Override
+			public void onEvent(KeyHeldEvent event) {
+				
+				if (event.getKey() == Keyboard.KEY_W) {
+					x.increaseTarget((float)Math.sin(Math.toRadians(yaw)) * speed * DisplayManager.getFrameTime());
+					z.increaseTarget((float)-Math.cos(Math.toRadians(yaw)) * speed * DisplayManager.getFrameTime());
+				} else if (event.getKey() == Keyboard.KEY_S) {
+					x.increaseTarget((float)-Math.sin(Math.toRadians(yaw)) * speed * DisplayManager.getFrameTime());
+					z.increaseTarget((float)Math.cos(Math.toRadians(yaw)) * speed * DisplayManager.getFrameTime());
+				} else if (event.getKey() == Keyboard.KEY_SPACE) {
+					y.increaseTarget(speed * DisplayManager.getFrameTime());
+				} else if (event.getKey() == Keyboard.KEY_LSHIFT) {
+					y.increaseTarget(-speed * DisplayManager.getFrameTime());
+				} else if (event.getKey() == Keyboard.KEY_D) {
+					x.increaseTarget((float)Math.cos(Math.toRadians(yaw)) * speed * DisplayManager.getFrameTime());
+					z.increaseTarget((float)Math.sin(Math.toRadians(yaw)) * speed * DisplayManager.getFrameTime());
+				} else if (event.getKey() == Keyboard.KEY_A) {
+					x.increaseTarget((float)-Math.cos(Math.toRadians(yaw)) * speed * DisplayManager.getFrameTime());
+					z.increaseTarget((float)-Math.sin(Math.toRadians(yaw)) * speed * DisplayManager.getFrameTime());
+				}
+			}
+		}.listen();
+		
+		new MouseScrollEventListener() {
+			
+			@Override
+			public void onEvent(MouseScrollEvent event) {
+				speed += (speed * event.getDWheel()) / 1000;
+			}
+		}.listen();
+	}
+	
+	public SmoothFreeCamera() {
+		this(new Vector3f(0, 0, 0));
+	}
+	
+	@Override
+	public Vector3f getPosition() {
+		return new Vector3f(x.get(), y.get(), z.get());
+	}
+
+	@Override
+	public float getListenerPitch() {
+		return pitch;
+	}
+
+	@Override
+	public float getYaw() {
+		return yaw;
+	}
+
+	@Override
+	public float getRoll() {
+		return 0;
+	}
+
+	@Override
+	public void update() {
+		x.update(DisplayManager.getFrameTime());
+		y.update(DisplayManager.getFrameTime());
+		z.update(DisplayManager.getFrameTime());
+	}
+
+}
