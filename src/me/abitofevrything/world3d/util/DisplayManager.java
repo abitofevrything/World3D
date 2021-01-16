@@ -13,16 +13,60 @@ import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.PixelFormat;
 
 public class DisplayManager {
-	private static final int WIDTH = 1280;
-	private static final int HEIGHT = 720;
-	private static final int FPS_CAP = Integer.MAX_VALUE;
+	private static int FPS_CAP = Integer.MAX_VALUE;
 
 	private static long lastFrameTime;
 	private static float delta;
 
-	public static void createDisplay(String title) {
+	public static void createDisplay(String title, int width, int height) {
 		try {
-			Display.setDisplayMode(new DisplayMode(WIDTH, HEIGHT));
+			Display.setDisplayMode(new DisplayMode(width, height));
+			ContextAttribs attribs = new ContextAttribs(3, 2).withProfileCore(true).withForwardCompatible(true);
+			Display.create(new PixelFormat().withDepthBits(24).withSamples(4), attribs);
+			Display.setTitle(title);
+			Display.setLocation(0, 0);
+			Display.setInitialBackground(1, 1, 1);
+			GL11.glEnable(GL13.GL_MULTISAMPLE);
+		} catch (LWJGLException e) {
+			e.printStackTrace();
+			System.err.println("Couldn't create display!");
+			System.exit(-1);
+		}
+		GL11.glViewport(0, 0, Display.getWidth(), Display.getHeight());
+		lastFrameTime = getCurrentTime();
+	}
+	
+	public static void createFullScreenDisplay(String title) {
+		try {
+			
+			DisplayMode[] displayModes = Display.getAvailableDisplayModes();
+			
+			DisplayMode chosen = null;
+			int chosenOffset = -1;
+			
+			DisplayMode desktop = Display.getDesktopDisplayMode();
+			int targetWidth = desktop.getWidth();
+			int targetHeight = desktop.getHeight();
+			
+			for (DisplayMode curr : displayModes) {
+				if (curr.isFullscreenCapable()) {
+					int offset = (int)(Math.abs(targetWidth - curr.getWidth()) * Math.abs(targetHeight - curr.getHeight()));
+					
+					if (offset < chosenOffset || chosenOffset == -1) {
+						chosenOffset = offset;
+						chosen = curr;
+					}
+				}
+			}
+			
+			if (chosen == null) {
+				createDisplay(title, 1, 1);
+				maximiseDisplay();
+				return;
+			}
+			
+			Display.setDisplayMode(chosen);
+			Display.setFullscreen(true);
 			ContextAttribs attribs = new ContextAttribs(3, 2).withProfileCore(true).withForwardCompatible(true);
 			Display.create(new PixelFormat().withDepthBits(24).withSamples(4), attribs);
 			Display.setTitle(title);
@@ -73,7 +117,7 @@ public class DisplayManager {
 
 	public static void maximiseDisplay() {
 		try {
-			Display.setLocation(-7, 0);
+			Display.setLocation(0, 0);
 			Display.setDisplayMode(Display.getDesktopDisplayMode());
 		} catch (LWJGLException e) {
 			System.err.println("Unable to maximise window");

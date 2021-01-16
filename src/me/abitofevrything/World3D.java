@@ -29,9 +29,12 @@ public class World3D {
 	 * 
 	 * @param title
 	 */
-	public static void init(String title) {
-		DisplayManager.createDisplay(title);
-		DisplayManager.maximiseDisplay();
+	public static void init(String title, int width, int height, boolean fullscreen) {
+		if (fullscreen) {
+			DisplayManager.createFullScreenDisplay(title);
+		} else {
+			DisplayManager.createDisplay(title, width, height);
+		}
 		Input.init();
 		AudioListener.init();
 		

@@ -19,7 +19,7 @@ public class Main {
 
 	public static void main(String[] args) {
 		
-		World3D.init("World3D test");
+		World3D.init("World3D test", 1280, 720, true);
 		
 		AnimatedModel model = new AnimatedModel(CubeGenerator.generateCube(1), Texture.newTexture(new ResourceFile("diffuse.png")).anisotropic().create());
 

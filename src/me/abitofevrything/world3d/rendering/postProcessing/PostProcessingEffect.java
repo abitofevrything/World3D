@@ -37,37 +37,33 @@ public class PostProcessingEffect extends EventSubscribable implements Cloneable
 	private PostProcessingShader shader;
 	private RenderTarget output, input;
 	
-	private RenderEventListener inputUpdateListener;
+	private RenderEventListener inputUpdateListener = new RenderEventListener() {
+		
+		@Override
+		public void onEvent(RenderEvent event) {
+			output.bindToRenderOutput();
+			shader.start();
+			
+			QUAD.bind(0);
+			
+			if (shader.hasColourInput()) shader.colourInput.loadAndBindTexture(input.getColourTexture(), 0);
+			if (shader.hasDepthInput()) shader.depthInput.loadAndBindTexture(input.getDepthTexture(), 1);
+			
+			GL11.glDrawElements(GL11.GL_TRIANGLES, QUAD.getIndexCount(), GL11.GL_UNSIGNED_INT, 0);
+			
+			QUAD.bind(0);
+			
+			shader.stop();
+			
+			triggerEventForSubscribers(new RenderEvent("render"));
+			output.finishRender();
+		}
+	};
 	
 	public PostProcessingEffect(String fragmentShader, RenderTarget input, RenderTarget output) {
 		this.shader = new PostProcessingShader(new ResourceFile(fragmentShader));
 		this.input = input;
 		this.output = output;
-		
-		inputUpdateListener = new RenderEventListener() {
-			
-			@Override
-			public void onEvent(RenderEvent event) {
-				System.out.println("PPE rendering from target " + input.getId() + " to " + output.getId());
-				
-				output.bindToRenderOutput();
-				shader.start();
-				
-				QUAD.bind(0);
-				
-				if (shader.hasColourInput()) shader.colourInput.loadAndBindTexture(input.getColourTexture(), 0);
-				if (shader.hasDepthInput()) shader.depthInput.loadAndBindTexture(input.getDepthTexture(), 1);
-				
-				GL11.glDrawElements(GL11.GL_TRIANGLES, QUAD.getIndexCount(), GL11.GL_UNSIGNED_INT, 0);
-				
-				QUAD.bind(0);
-				
-				shader.stop();
-				
-				triggerEventForSubscribers(new RenderEvent("render"));
-				output.finishRender();
-			}
-		};
 		
 		input.subscribeToEvent(inputUpdateListener);
 	}
@@ -80,29 +76,6 @@ public class PostProcessingEffect extends EventSubscribable implements Cloneable
 		this.shader = shader;
 		this.output = output;
 		this.input = input;
-		
-		inputUpdateListener = new RenderEventListener() {
-			
-			@Override
-			public void onEvent(RenderEvent event) {
-				output.bindToRenderOutput();
-				shader.start();
-				
-				QUAD.bind(0);
-				
-				if (shader.hasColourInput()) shader.colourInput.loadAndBindTexture(input.getColourTexture(), 0);
-				if (shader.hasDepthInput()) shader.depthInput.loadAndBindTexture(input.getDepthTexture(), 1);
-				
-				GL11.glDrawElements(GL11.GL_TRIANGLES, QUAD.getIndexCount(), GL11.GL_UNSIGNED_INT, 0);
-				
-				QUAD.bind(0);
-				
-				shader.stop();
-				
-				triggerEventForSubscribers(new RenderEvent("render"));
-				output.finishRender();
-			}
-		};
 		
 		input.subscribeToEvent(inputUpdateListener);
 	}

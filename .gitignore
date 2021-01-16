@@ -5,3 +5,6 @@
 
 #Compiled project
 bin/
+
+#Old code
+src/legacyTest/
