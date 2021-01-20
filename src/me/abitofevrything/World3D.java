@@ -4,11 +4,13 @@ import me.abitofevrything.world3d.animation.Animation;
 import me.abitofevrything.world3d.audio.AudioListener;
 import me.abitofevrything.world3d.entity.Entity;
 import me.abitofevrything.world3d.events.EventManager;
+import me.abitofevrything.world3d.events.game.GameUpdateEvent;
 import me.abitofevrything.world3d.events.input.Input;
 import me.abitofevrything.world3d.events.output.RenderEvent;
 import me.abitofevrything.world3d.loaders.AnimatedModelLoader;
 import me.abitofevrything.world3d.loaders.AnimationLoader;
 import me.abitofevrything.world3d.models.animatedModel.AnimatedModel;
+import me.abitofevrything.world3d.rendering.RenderTarget;
 import me.abitofevrything.world3d.util.DisplayManager;
 import me.abitofevrything.world3d.util.ResourceFile;
 
@@ -27,13 +29,16 @@ public class World3D {
 	/**
 	 * Initializes the engine
 	 * 
-	 * @param title
+	 * @param title - The title of the window
+	 * @param displayWidth - The width of the window. Set to 0 in fullscreen mode to use default width
+	 * @param displayHeight - The height of the window. Set to 0 in fullscreen mode to use default height
+	 * @param fullscreen - Whever the display should be fullscreen or not
 	 */
-	public static void init(String title, int width, int height, boolean fullscreen) {
+	public static void init(String title, int displayWidth, int displayHeight, boolean fullscreen) {
 		if (fullscreen) {
-			DisplayManager.createFullScreenDisplay(title);
+			DisplayManager.createFullScreenDisplay(title, displayWidth, displayHeight);
 		} else {
-			DisplayManager.createDisplay(title, width, height);
+			DisplayManager.createDisplay(title, displayWidth, displayHeight);
 		}
 		Input.init();
 		AudioListener.init();
@@ -116,6 +121,10 @@ public class World3D {
 	 * 
 	 */
 	public static void update() {
+		EventManager.triggerEvent(new GameUpdateEvent());
+		
+		RenderTarget.SCREEN.bindToRenderOutput();
+		
 		GL11.glClearColor(0, 0, 1, 1);
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 		

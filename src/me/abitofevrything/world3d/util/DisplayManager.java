@@ -18,7 +18,14 @@ public class DisplayManager {
 	private static long lastFrameTime;
 	private static float delta;
 
+	private static boolean isFullScreen = false;
+	
 	public static void createDisplay(String title, int width, int height) {
+		
+		DisplayMode desktop = Display.getDesktopDisplayMode();
+		if (width == 0) width = desktop.getWidth();
+		if (height == 0) height = desktop.getHeight();
+		
 		try {
 			Display.setDisplayMode(new DisplayMode(width, height));
 			ContextAttribs attribs = new ContextAttribs(3, 2).withProfileCore(true).withForwardCompatible(true);
@@ -32,21 +39,22 @@ public class DisplayManager {
 			System.err.println("Couldn't create display!");
 			System.exit(-1);
 		}
-		GL11.glViewport(0, 0, Display.getWidth(), Display.getHeight());
+		GL11.glViewport(0, 0, width, height);
 		lastFrameTime = getCurrentTime();
 	}
 	
-	public static void createFullScreenDisplay(String title) {
+	public static void createFullScreenDisplay(String title, int targetWidth, int targetHeight) {
+		
+		DisplayMode desktop = Display.getDesktopDisplayMode();
+		if (targetWidth == 0) targetWidth = desktop.getWidth();
+		if (targetHeight == 0) targetHeight = desktop.getHeight();
+		
 		try {
 			
 			DisplayMode[] displayModes = Display.getAvailableDisplayModes();
 			
 			DisplayMode chosen = null;
 			int chosenOffset = -1;
-			
-			DisplayMode desktop = Display.getDesktopDisplayMode();
-			int targetWidth = desktop.getWidth();
-			int targetHeight = desktop.getHeight();
 			
 			for (DisplayMode curr : displayModes) {
 				if (curr.isFullscreenCapable()) {
@@ -63,14 +71,16 @@ public class DisplayManager {
 				createDisplay(title, 1, 1);
 				maximiseDisplay();
 				return;
+			} else if (chosen.getWidth() != targetWidth || chosen.getHeight() != targetHeight) {
+				System.out.println("Unable to create fullscreen display with requested resolution (" + targetWidth + "*" + targetHeight + "). Using " + chosen.getWidth() + "*" + chosen.getHeight() + " instead.");
 			}
 			
-			Display.setDisplayMode(chosen);
-			Display.setFullscreen(true);
+			isFullScreen = true;
+			
+			Display.setDisplayModeAndFullscreen(chosen);
 			ContextAttribs attribs = new ContextAttribs(3, 2).withProfileCore(true).withForwardCompatible(true);
 			Display.create(new PixelFormat().withDepthBits(24).withSamples(4), attribs);
 			Display.setTitle(title);
-			Display.setLocation(0, 0);
 			Display.setInitialBackground(1, 1, 1);
 			GL11.glEnable(GL13.GL_MULTISAMPLE);
 		} catch (LWJGLException e) {
@@ -78,12 +88,12 @@ public class DisplayManager {
 			System.err.println("Couldn't create display!");
 			System.exit(-1);
 		}
-		GL11.glViewport(0, 0, Display.getWidth(), Display.getHeight());
+		GL11.glViewport(0, 0, targetWidth, targetHeight);
 		lastFrameTime = getCurrentTime();
 	}
 
 	public static void update() {
-		if (Display.wasResized()) {
+		if (Display.wasResized() && !isFullScreen) {
 			GL11.glViewport(0, 0, Display.getWidth(), Display.getHeight());
 		}
 		Display.sync(FPS_CAP);
