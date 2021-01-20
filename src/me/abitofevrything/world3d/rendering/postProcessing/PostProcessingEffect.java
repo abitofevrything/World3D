@@ -6,6 +6,7 @@ import me.abitofevrything.world3d.events.EventSubscribable;
 import me.abitofevrything.world3d.events.output.RenderEvent;
 import me.abitofevrything.world3d.events.output.RenderEventListener;
 import me.abitofevrything.world3d.rendering.RenderTarget;
+import me.abitofevrything.world3d.rendering.opengl.OpenGlUtils;
 import me.abitofevrything.world3d.rendering.opengl.Vao;
 import me.abitofevrything.world3d.util.ResourceFile;
 
@@ -41,7 +42,13 @@ public class PostProcessingEffect extends EventSubscribable implements Cloneable
 		
 		@Override
 		public void onEvent(RenderEvent event) {
+			OpenGlUtils.enableDepthTesting(false);
+			
 			output.bindToRenderOutput();
+			
+			GL11.glClearColor(0, 0, 1, 1);
+			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+			
 			shader.start();
 			
 			QUAD.bind(0);
@@ -57,15 +64,13 @@ public class PostProcessingEffect extends EventSubscribable implements Cloneable
 			
 			triggerEventForSubscribers(new RenderEvent("render"));
 			output.finishRender();
+			
+			OpenGlUtils.enableDepthTesting(true);
 		}
 	};
 	
 	public PostProcessingEffect(String fragmentShader, RenderTarget input, RenderTarget output) {
-		this.shader = new PostProcessingShader(new ResourceFile(fragmentShader));
-		this.input = input;
-		this.output = output;
-		
-		input.subscribeToEvent(inputUpdateListener);
+		this(new PostProcessingShader(new ResourceFile(fragmentShader)), input, output);
 	}
 	
 	public PostProcessingEffect(String shader) {
@@ -114,5 +119,10 @@ public class PostProcessingEffect extends EventSubscribable implements Cloneable
 	@Override
 	public PostProcessingEffect clone() {
 		return new PostProcessingEffect(shader, new RenderTarget(), new RenderTarget());
+	}
+	
+	@Override
+	public String toString() {
+		return super.toString() + " [input=" + input.getId() + ", output=" + output.getId() + "]";
 	}
 }

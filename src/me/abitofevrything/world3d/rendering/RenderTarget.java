@@ -26,36 +26,53 @@ public class RenderTarget extends EventSubscribable {
 	private int id;
 	private Texture colourTex, depthTex;
 	
+	private static int current;
+	
 	private RenderTarget(int width, int height, int id) {
 		this.width = width;
 		this.height = height;
 		
+		if (width <= 0 || height <= 0) {
+			throw new IllegalArgumentException("Width and Height of FBO cannot be 0");
+		}
+		
 		this.id = id;
 		GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, id);
-		GL11.glDrawBuffer(GL30.GL_COLOR_ATTACHMENT0);
 		
-		/* Create and set up the colour texture for this FBO */
-		colourTex = new Texture(GL11.glGenTextures(), width, height);
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, colourTex.getId());
-		GL11.glTexImage2D(colourTex.getId(), 0, GL11.GL_RGBA8, width, height, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, (ByteBuffer) null);
-		
-		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
-		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
-		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL12.GL_CLAMP_TO_EDGE);
-		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL12.GL_CLAMP_TO_EDGE);
-		
-		GL30.glFramebufferTexture2D(GL30.GL_FRAMEBUFFER, GL30.GL_COLOR_ATTACHMENT0, GL11.GL_TEXTURE_2D, colourTex.getId(), 0);
-		
-		
-		/* Create and set up the depth texture for this FBO */
-		depthTex = new Texture(GL11.glGenTextures(), width, height);
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, depthTex.getId());
-		GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL14.GL_DEPTH_COMPONENT24, width, height, 0, GL11.GL_DEPTH_COMPONENT, GL11.GL_FLOAT, (ByteBuffer) null);
-		
-		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
-		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
+		current = id;
+		if (id != 0) {
+			GL11.glDrawBuffer(GL30.GL_COLOR_ATTACHMENT0);
 
-		GL30.glFramebufferTexture2D(GL30.GL_FRAMEBUFFER, GL30.GL_DEPTH_ATTACHMENT, GL11.GL_TEXTURE_2D, depthTex.getId(), 0);
+			/* Create and set up the colour texture for this FBO */
+			colourTex = new Texture(GL11.glGenTextures(), width, height);
+			GL11.glBindTexture(GL11.GL_TEXTURE_2D, colourTex.getId());
+			GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA8, width, height, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_INT, (ByteBuffer) null);
+	
+			GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL12.GL_TEXTURE_BASE_LEVEL, 0);
+		    GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL12.GL_TEXTURE_MAX_LEVEL, 0);
+	
+			GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
+			GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
+			GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL12.GL_CLAMP_TO_EDGE);
+			GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL12.GL_CLAMP_TO_EDGE);
+	
+			GL30.glFramebufferTexture2D(GL30.GL_FRAMEBUFFER, GL30.GL_COLOR_ATTACHMENT0, GL11.GL_TEXTURE_2D, colourTex.getId(), 0);
+	
+			/* Create and set up the depth texture for this FBO */
+			depthTex = new Texture(GL11.glGenTextures(), width, height);
+			GL11.glBindTexture(GL11.GL_TEXTURE_2D, depthTex.getId());
+			GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL14.GL_DEPTH_COMPONENT24, width, height, 0, GL11.GL_DEPTH_COMPONENT, GL11.GL_FLOAT, (ByteBuffer) null);
+	
+			GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
+			GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
+	
+			GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL12.GL_TEXTURE_BASE_LEVEL, 0);
+		    GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL12.GL_TEXTURE_MAX_LEVEL, 0);
+	
+			GL30.glFramebufferTexture2D(GL30.GL_FRAMEBUFFER, GL30.GL_DEPTH_ATTACHMENT, GL11.GL_TEXTURE_2D, depthTex.getId(), 0);
+
+		}
+		
 	}
 	
 	public RenderTarget() {
@@ -76,7 +93,17 @@ public class RenderTarget extends EventSubscribable {
 
 	public void bindToRenderOutput() {
 		GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, id);
+		current = id;
 		GL11.glViewport(0, 0, width, height);
+		
+		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+	}
+	
+	public void bindToRead() {
+		GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
+		GL30.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, id);
+		current = id;
+		GL11.glReadBuffer(GL30.GL_COLOR_ATTACHMENT0);
 	}
 	
 	public void finishRender() {
@@ -85,5 +112,9 @@ public class RenderTarget extends EventSubscribable {
 		
 	public int getId() {
 		return id;
+	}
+	
+	public static int getCurrentBound() {
+		return current;
 	}
 }

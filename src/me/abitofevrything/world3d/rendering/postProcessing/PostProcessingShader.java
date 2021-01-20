@@ -12,14 +12,6 @@ public class PostProcessingShader extends ShaderProgram {
 	public PostProcessingShader(ResourceFile fragmentFile) {
 		super(new ResourceFile("me/abitofevrything/world3d/rendering/postProcessing/postProcessingVertex.glsl"), fragmentFile, "position");
 		super.addUniformsNoWarn(colourInput, depthInput);
-		
-		if (colourInput.getLocation() == -1) {
-			System.err.println("Post processing effect inputs should be in the form of a sampler2D named \"colourInput\" (optional)");
-		}
-		
-		if (depthInput.getLocation() == -1) {
-			System.err.println("Post processing effect depth inputs should be in the form of a sampler2D named \"depthInput\" (optional)");
-		}
 	}
 
 	public boolean hasDepthInput() {

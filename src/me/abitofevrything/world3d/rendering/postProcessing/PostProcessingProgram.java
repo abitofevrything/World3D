@@ -67,23 +67,17 @@ public class PostProcessingProgram {
 		/* Avoid having render targets bound to multiple I/Os */
 		if (effects.contains(effect)) effect = effect.clone();
 		
-		System.out.println("Adding effect to program [" + input.getId() + ", " + output.getId() + "] at index " + index);
-		
 		effects.add(index, effect);
 		
 		if (index == 0) {
-			System.out.print("Set effect input to " + input.getId());
 			effect.setInput(input);
 			if (effects.size() == 1) {
-				System.out.println(" and output to " + output.getId());
 				effect.setOutput(output);
 			} else {
-				System.out.println(" and set input of effect " + (index + 1) + " to " + effect.getOutput().getId());
 				effects.get(index + 1).setInput(effect.getOutput());
 			}
 		} else if (index == effects.size() - 1) {
 			//Case where the added effect is the only one is handeled above; we can assume that there is at least one effect before this one
-			System.out.println("Set output to " + output.getId() + " and set effect " + (index - 1) + " output to " + effect.getInput().getId());
 			effect.setOutput(output);
 			effects.get(index - 1).setOutput(effect.getInput());
 		} else {
@@ -141,6 +135,11 @@ public class PostProcessingProgram {
 	
 	public int size() {
 		return effects.size();
+	}
+	
+	@Override
+	public String toString() {
+		return super.toString() + " [input=" + input.getId() + ", output=" + output.getId() + "]";
 	}
 	
 }
