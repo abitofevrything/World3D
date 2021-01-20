@@ -42,6 +42,10 @@ public class Entity extends AudioSource {
 		}.listen();
 	}
 	
+	public Entity(AnimatedModel model, Vector3f position) {
+		this(model, position, 0, 0, 0, 1);
+	}
+	
 	public Matrix4f getTransformationMatrix() {
 		return Utils.createTransformationMatrix(this);
 	}
