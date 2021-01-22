@@ -1,6 +1,5 @@
 package me.abitofevrything.world3d.loaders;
 
-import legacyTest.GeneralSettings;
 import me.abitofevrything.world3d.loaders.colladaLoader.ColladaLoader;
 import me.abitofevrything.world3d.loaders.dataStructures.AnimatedModelData;
 import me.abitofevrything.world3d.loaders.dataStructures.JointData;
@@ -14,6 +13,8 @@ import me.abitofevrything.world3d.util.ResourceFile;
 
 public class AnimatedModelLoader {
 
+	public static final int MAX_WEIGHTS = 3;
+	
 	/**
 	 * Creates an AnimatedEntity from the data in an entity file. It loads up
 	 * the collada model data, stores the extracted data in a VAO, sets up the
@@ -24,7 +25,7 @@ public class AnimatedModelLoader {
 	 * @return The animated entity (no animation applied though)
 	 */
 	public static AnimatedModel loadEntity(ResourceFile modelFile, ResourceFile textureFile) {
-		AnimatedModelData entityData = ColladaLoader.loadColladaModel(modelFile, GeneralSettings.MAX_WEIGHTS);
+		AnimatedModelData entityData = ColladaLoader.loadColladaModel(modelFile, MAX_WEIGHTS);
 		Vao model = createVao(entityData.getMeshData());
 		Texture texture = loadTexture(textureFile);
 		SkeletonData skeletonData = entityData.getJointsData();
