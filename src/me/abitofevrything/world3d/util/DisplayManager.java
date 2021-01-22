@@ -29,10 +29,10 @@ public class DisplayManager {
 		try {
 			Display.setDisplayMode(new DisplayMode(width, height));
 			ContextAttribs attribs = new ContextAttribs(3, 2).withProfileCore(true).withForwardCompatible(true);
+			Display.setInitialBackground(0, 0, 0);
 			Display.create(new PixelFormat().withDepthBits(24).withSamples(4), attribs);
 			Display.setTitle(title);
 			Display.setLocation(0, 0);
-			Display.setInitialBackground(0, 0, 0);
 			GL11.glEnable(GL13.GL_MULTISAMPLE);
 		} catch (LWJGLException e) {
 			e.printStackTrace();
@@ -78,10 +78,10 @@ public class DisplayManager {
 			isFullScreen = true;
 			
 			Display.setDisplayModeAndFullscreen(chosen);
+			Display.setInitialBackground(0, 0, 0);
 			ContextAttribs attribs = new ContextAttribs(3, 2).withProfileCore(true).withForwardCompatible(true);
 			Display.create(new PixelFormat().withDepthBits(24).withSamples(4), attribs);
 			Display.setTitle(title);
-			Display.setInitialBackground(0, 0, 0);
 			GL11.glEnable(GL13.GL_MULTISAMPLE);
 		} catch (LWJGLException e) {
 			e.printStackTrace();
