@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 
 public class World3D {
@@ -85,6 +86,28 @@ public class World3D {
 	}
 	
 	/**
+	 * Removes all occurences of an entity in the scene
+	 * 
+	 * @param e
+	 */
+	public static void removeEntity(Entity e) {
+		for (String s : entities.keySet()) {
+			List<Entity> l = entities.get(s);
+			if (l.contains(e)) {
+				l.remove(e);
+			}
+		}
+	}
+	
+	/**
+	 * Removes all entities
+	 */
+	public static void clearEntities() {
+		entities = new HashMap<String, List<Entity>>();
+		entities.put("", new ArrayList<Entity>());
+	}
+	
+	/**
 	 * Gets all of the entities in a render pool
 	 * 
 	 * @param key
@@ -131,5 +154,10 @@ public class World3D {
 		EventManager.triggerEvent(new RenderEvent("frameRender"));
 		
 		DisplayManager.update();
+		
+		if (Display.isCloseRequested()) {
+			exit();
+			System.exit(0);
+		}
 	}
 }
