@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.lwjgl.opengl.GL11;
+
 import me.abitofevrything.World3D;
 import me.abitofevrything.world3d.entity.Entity;
 import me.abitofevrything.world3d.events.EventSubscribable;
@@ -118,7 +120,11 @@ public abstract class Renderer<S extends ShaderProgram> extends EventSubscribabl
 		return shader;
 	}
 	
-	public void setRenderTarget(RenderTarget target) {
+	public void setTarget(RenderTarget target) {
 		this.target = target;
+	}
+	
+	protected static void renderMesh(Vao mesh) {
+		GL11.glDrawElements(GL11.GL_TRIANGLES, mesh.getIndexCount(), GL11.GL_UNSIGNED_INT, 0);
 	}
 }

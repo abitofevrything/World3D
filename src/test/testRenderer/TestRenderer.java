@@ -3,8 +3,6 @@ package test.testRenderer;
 import java.util.List;
 import java.util.Map;
 
-import org.lwjgl.opengl.GL11;
-
 import me.abitofevrything.world3d.entity.Entity;
 import me.abitofevrything.world3d.rendering.RenderTarget;
 import me.abitofevrything.world3d.rendering.Renderer;
@@ -37,7 +35,7 @@ public class TestRenderer extends Renderer<TestShader> {
 				for (Entity entity : textureBatch) {
 					shader.transformationMatrix.loadMatrix(entity.getTransformationMatrix());
 					
-					GL11.glDrawElements(GL11.GL_TRIANGLES, vao.getIndexCount(), GL11.GL_UNSIGNED_INT, 0);
+					super.renderMesh(vao);
 				}
 			}
 			vao.unbind(0, 1);
