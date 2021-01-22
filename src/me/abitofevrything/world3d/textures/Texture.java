@@ -35,6 +35,10 @@ public class Texture {
 		return new TextureBuilder(textureFile);
 	}
 	
+	public static TextureBuilder newTexture(String file) {
+		return newTexture(new ResourceFile(file));
+	}
+	
 	public int getId() {
 		return textureId;
 	}
