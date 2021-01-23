@@ -1,5 +1,6 @@
 package me.abitofevrything.world3d.util.cameras;
 
+import me.abitofevrything.world3d.events.input.Input;
 import me.abitofevrything.world3d.events.input.MouseDraggedEvent;
 import me.abitofevrything.world3d.events.input.MouseDraggedEventListener;
 import me.abitofevrything.world3d.events.input.MouseScrollEvent;
@@ -9,6 +10,16 @@ import me.abitofevrything.world3d.util.SmoothFloat;
 
 import org.lwjgl.util.vector.Vector3f;
 
+/**
+ * A {@link Camera} which orbits a point in a smooth manner
+ * 
+ * Controls are :
+ *  - Scroll in / out : Zoom in / out
+ *  - Drag mouse : rotate camera around specified point
+ * 
+ * @author abitofevrything
+ *
+ */
 public class SmoothOrbitCamera extends Camera {
 
 	private static final float PITCH_SENSITIVITY = 0.3f;
@@ -24,6 +35,11 @@ public class SmoothOrbitCamera extends Camera {
 	private SmoothFloat angleAroundPlayer = new SmoothFloat(0, 10);
 	private SmoothFloat distanceFromPlayer = new SmoothFloat(10, 5);
 
+	/**
+	 * Creates a {@link SmoothOrbitCamera}
+	 * 
+	 * @param center The point for this camera to orbit around.
+	 */
 	public SmoothOrbitCamera(Vector3f center) {
 		this.center = center;
 
@@ -55,6 +71,8 @@ public class SmoothOrbitCamera extends Camera {
 	
 	@Override
 	public void update() {
+		Input.setMouseGrabbed(false);
+		
 		//Update the smooth floats
 		distanceFromPlayer.update(DisplayManager.getFrameTime());
 		pitch.update(DisplayManager.getFrameTime());
@@ -106,7 +124,7 @@ public class SmoothOrbitCamera extends Camera {
 	}
 
 	@Override
-	public float getListenerPitch() {
+	public float getPitch() {
 		return pitch.get();
 	}
 
@@ -118,6 +136,15 @@ public class SmoothOrbitCamera extends Camera {
 	@Override
 	public float getRoll() {
 		return 0;
+	}
+	
+	/**
+	 * Sets the center of this camera
+	 * 
+	 * @param center The center of this camera
+	 */
+	public void setCenter(Vector3f center) {
+		this.center = center;
 	}
 
 }

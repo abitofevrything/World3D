@@ -5,8 +5,20 @@ import me.abitofevrything.world3d.entity.Entity;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
 
+/**
+ * A utility class
+ * 
+ * @author abitofevrything
+ *
+ */
 public class Utils {
 
+	/**
+	 * Creates a transformation matrix for a given entity
+	 * 
+	 * @param entity The entity to create the matrix for
+	 * @return The created matrix
+	 */
 	public static Matrix4f createTransformationMatrix(Entity entity) {
 		Matrix4f matrix = new Matrix4f();
 

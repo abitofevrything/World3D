@@ -8,6 +8,14 @@ import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
+/**
+ * Represents a VAO
+ * 
+ * A VAO stores data in {@link VBO}s about a mesh
+ * 
+ * @author abitofevrything
+ *
+ */
 public class Vao {
 	
 	private static final int BYTES_PER_FLOAT = 4;

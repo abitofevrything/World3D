@@ -7,6 +7,16 @@ import me.abitofevrything.world3d.events.input.MouseScrollEventListener;
 
 import org.lwjgl.util.vector.Vector3f;
 
+/**
+ * A {@link Camera} that rbits around a point
+ * 
+ * Controls are :
+ *  - Scroll up / down : Zoom in / out
+ *  - Drag mouse : Rotate camera
+ * 
+ * @author abitofevrything
+ *
+ */
 public class OrbitCamera extends Camera {
 
 	private static final float MIN_DISTANCE = 5, MAX_DISTANCE = 300;
@@ -25,6 +35,11 @@ public class OrbitCamera extends Camera {
 	private float angleAroundPlayer = 0;
 	private float distanceFromPlayer = 10;
 
+	/**
+	 * Creates an {@link OrbitCamera}
+	 * 
+	 * @param center The point to orbit around
+	 */
 	public OrbitCamera(Vector3f center) {
 		this.center = center;
 		
@@ -54,6 +69,9 @@ public class OrbitCamera extends Camera {
 		}.listen();
 	}
 
+	/**
+	 * Creates an {@link OrbitCamera} centered on the origin
+	 */
 	public OrbitCamera() {
 		this(new Vector3f(0, 0, 0));
 	}
@@ -105,11 +123,6 @@ public class OrbitCamera extends Camera {
 	}
 
 	@Override
-	public float getListenerPitch() {
-		return pitch;
-	}
-
-	@Override
 	public float getYaw() {
 		return yaw;
 	}
@@ -117,6 +130,11 @@ public class OrbitCamera extends Camera {
 	@Override
 	public float getRoll() {
 		return 0;
+	}
+
+	@Override
+	public float getPitch() {
+		return pitch;
 	}
 
 }

@@ -2,6 +2,13 @@ package me.abitofevrything.world3d.rendering.shaders;
 
 import org.lwjgl.opengl.GL20;
 
+/**
+ * Represents a unifrom variable in a {@link ShaderProgram}
+ * A uniforma variable is a varibale that can have its value changed programatically
+ * 
+ * @author abitofevrything
+ *
+ */
 public abstract class Uniform {
 	
 	private static final int NOT_FOUND = -1;

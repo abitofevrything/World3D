@@ -2,6 +2,12 @@ package me.abitofevrything.world3d.rendering.shaders;
 
 import org.lwjgl.util.vector.Matrix4f;
 
+/**
+ * Represents a uniform array of {@link Matrix4f}
+ * 
+ * @author abitofevrything
+ *
+ */
 public class UniformMat4Array extends Uniform{
 	
 	private UniformMatrix[] matrixUniforms;

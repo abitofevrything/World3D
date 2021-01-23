@@ -9,6 +9,16 @@ import me.abitofevrything.world3d.events.input.MouseScrollEventListener;
 
 import org.lwjgl.util.vector.Vector3f;
 
+/**
+ * A {@link Camera} that orbits an {@link Entity}
+ * 
+ * Controls are :
+ *  - Move mouse : Rotate view
+ *  - Scroll up / down : Zoom in / out
+ * 
+ * @author abitofevrything
+ *
+ */
 public class EntityOrbitCamera extends EntityTrackCamera {
 
 	private static final float MIN_DISTANCE = 5, MAX_DISTANCE = 300;
@@ -16,6 +26,16 @@ public class EntityOrbitCamera extends EntityTrackCamera {
 	private static final float SCROLL_SENSITIVITY = 1;
 	private static final float MOVE_SENSITIVITY = 1;
 	
+	/**
+	 * Creates an {@link EntityOrbitCamera}
+	 * 
+	 * @param entity The entity to orbit
+	 * @param distance The original distance from the entity
+	 * @param centerOffset An offset relative to the entity's position to center this camera on
+	 * @param rx The original x rotation offset
+	 * @param ry The original y rotation offset
+	 * @param rz The original z rotation offset
+	 */
 	public EntityOrbitCamera(Entity entity, float distance, Vector3f centerOffset, float rx, float ry, float rz) {
 		super(entity, distance, centerOffset, rx, ry, rz);
 		Input.setMouseGrabbed(true);
@@ -48,16 +68,27 @@ public class EntityOrbitCamera extends EntityTrackCamera {
 		}.listen();
 	}
 	
+	/**
+	 * Creates a {@link EntityOrbitCamera}
+	 * 
+	 * @param entity The entity to orbit
+	 * @param distance The distance from the entity
+	 */
 	public EntityOrbitCamera(Entity entity, float distance) {
 		this(entity, distance, new Vector3f(0, 0, 0), 0, 0, 0);
 	}
 	
+	/**
+	 * Creates a {@link EntityOrbitCamera}
+	 * 
+	 * @param entity The entity to orbit
+	 * @param distance The distance from the entity
+	 * @param centerOffset An offset relative to the entity's position to center this camera on
+	 */
 	public EntityOrbitCamera(Entity entity, float distance, Vector3f centerOffset) {
 		this(entity, distance, centerOffset, 0, 0, 0);
 	}
 	
 	@Override
-	public void update() {
-		
-	}
+	public void update() {}
 }

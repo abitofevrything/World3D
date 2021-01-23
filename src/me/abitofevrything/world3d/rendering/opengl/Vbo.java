@@ -6,6 +6,14 @@ import java.nio.IntBuffer;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL15;
 
+/**
+ * Represents a VBO
+ * 
+ * A VBO is a data component in a {@link Vao}
+ * 
+ * @author abitofevrything
+ *
+ */
 public class Vbo {
 	
 	private final int vboId;

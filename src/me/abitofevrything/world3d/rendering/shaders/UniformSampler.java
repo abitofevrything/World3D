@@ -4,6 +4,13 @@ import org.lwjgl.opengl.GL20;
 
 import me.abitofevrything.world3d.textures.Texture;
 
+/**
+ * Represents a uniform sampler
+ * A sampler is used to sample textures
+ * 
+ * @author abitofevrything
+ *
+ */
 public class UniformSampler extends Uniform {
 
 	private int currentValue;

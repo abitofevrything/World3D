@@ -11,6 +11,16 @@ import me.abitofevrything.world3d.util.SmoothFloat;
 
 import org.lwjgl.util.vector.Vector3f;
 
+/**
+ * A {@link Camera} that orbits around an {@link Entity}
+ * 
+ * Controls are :
+ *  - Scroll in / out : Zoom in / out
+ *  - Move mouse : Rotate camera around target entity
+ * 
+ * @author abitofevrything
+ *
+ */
 public class SmoothEntityOrbitCamera extends EntityTrackCamera {
 
 	private static final float MIN_DISTANCE = 5, MAX_DISTANCE = 300;
@@ -21,6 +31,16 @@ public class SmoothEntityOrbitCamera extends EntityTrackCamera {
 	private SmoothFloat pitchOffset, yawOffset, rollOffset;
 	private SmoothFloat distance;
 	
+	/**
+	 * Creates a {@link SmoothEntityOrbitCamera}
+	 * 
+	 * @param entity The target {@link Entity}
+	 * @param distance The original distance to have from the entity
+	 * @param centerOffset An offset relative to the entity's position to center this camera on
+	 * @param pitchOffset The original pitch offset relative to the entity's pitch
+	 * @param yawOffset The original yaw offset relative to the entity's yaw
+	 * @param rollOffset The original roll offset relative to the entity's roll
+	 */
 	public SmoothEntityOrbitCamera(Entity entity, float distance, Vector3f centerOffset, float pitchOffset, float yawOffset, float rollOffset) {
 		super(entity, distance, centerOffset, pitchOffset, yawOffset, rollOffset);
 		
@@ -28,8 +48,6 @@ public class SmoothEntityOrbitCamera extends EntityTrackCamera {
 		this.pitchOffset = new SmoothFloat(pitchOffset, 10);
 		this.yawOffset = new SmoothFloat(yawOffset, 10);
 		this.rollOffset = new SmoothFloat(rollOffset, 10);
-		
-		Input.setMouseGrabbed(true);
 		
 		new MouseScrollEventListener() {
 			
@@ -51,16 +69,31 @@ public class SmoothEntityOrbitCamera extends EntityTrackCamera {
 		}.listen();
 	}
 	
+	/**
+	 * Creates a {@link SmoothEntityOrbitCamera}
+	 * 
+	 * @param entity The target {@link Entity}
+	 * @param distance The original distance from the entity
+	 */
 	public SmoothEntityOrbitCamera(Entity entity, float distance) {
 		this(entity, distance, new Vector3f(0, 0, 0), 0, 0, 0);
 	}
 	
+	/**
+	 * Creates a {@link SmoothEntityOrbitCamera}
+	 * 
+	 * @param entity The target {@link Entity}
+	 * @param distance The original distance from the entity
+	 * @param centerOffset An offset relative to the entity's position to center this camera on
+	 */
 	public SmoothEntityOrbitCamera(Entity entity, float distance, Vector3f centerOffset) {
 		this(entity, distance, centerOffset, 0, 0, 0);
 	}
 	
 	@Override
 	public void update() {
+		Input.setMouseGrabbed(true);
+		
 		distance.update(DisplayManager.getFrameTime());
 		pitchOffset.update(DisplayManager.getFrameTime());
 		yawOffset.update(DisplayManager.getFrameTime());

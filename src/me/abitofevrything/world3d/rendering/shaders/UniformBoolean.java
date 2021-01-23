@@ -2,6 +2,12 @@ package me.abitofevrything.world3d.rendering.shaders;
 
 import org.lwjgl.opengl.GL20;
 
+/**
+ * Represents a uniform boolean
+ * 
+ * @author abitofevrything
+ *
+ */
 public class UniformBoolean extends Uniform {
 
 	private boolean currentBool;

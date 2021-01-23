@@ -12,6 +12,19 @@ import me.abitofevrything.world3d.util.SmoothFloat;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.util.vector.Vector3f;
 
+/**
+ * A smooth, fully user-controlled {@link Camera}
+ * 
+ * Controls are : 
+ *  - Move mouse : Rotate Camera
+ *  - Press W / S : Move fowards / backwards
+ *  - Press A / D : Move left / right
+ *  - Press Space / Shift : Move up / down
+ *  
+ *    
+ * @author abitofevrything
+ *
+ */
 public class SmoothFreeCamera extends Camera {
 	
 	private static final float PITCH_SENSITIVITY = 0.3f;
@@ -21,12 +34,15 @@ public class SmoothFreeCamera extends Camera {
 	private float yaw = 0, pitch = 0;
 	private SmoothFloat x, y, z;
 	
+	/**
+	 * Creates a {@link SmoothFreeCamera}
+	 * 
+	 * @param pos The original position
+	 */
 	public SmoothFreeCamera(Vector3f pos) {
 		this.x = new SmoothFloat(pos.x, 10);
 		this.y = new SmoothFloat(pos.y, 10);
 		this.z = new SmoothFloat(pos.z, 10);
-		
-		Input.setMouseGrabbed(true);
 		
 		new MouseMovedEventListener() {
 			@Override
@@ -77,6 +93,9 @@ public class SmoothFreeCamera extends Camera {
 		}.listen();
 	}
 	
+	/**
+	 * Creates a {@link SmoothFreeCamera} at the origin
+	 */
 	public SmoothFreeCamera() {
 		this(new Vector3f(0, 0, 0));
 	}
@@ -84,11 +103,6 @@ public class SmoothFreeCamera extends Camera {
 	@Override
 	public Vector3f getPosition() {
 		return new Vector3f(x.get(), y.get(), z.get());
-	}
-
-	@Override
-	public float getListenerPitch() {
-		return pitch;
 	}
 
 	@Override
@@ -103,9 +117,16 @@ public class SmoothFreeCamera extends Camera {
 
 	@Override
 	public void update() {
+		Input.setMouseGrabbed(true);
+		
 		x.update(DisplayManager.getFrameTime());
 		y.update(DisplayManager.getFrameTime());
 		z.update(DisplayManager.getFrameTime());
+	}
+
+	@Override
+	public float getPitch() {
+		return pitch;
 	}
 
 }

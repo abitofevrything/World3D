@@ -2,6 +2,12 @@ package me.abitofevrything.world3d.util.cameras;
 
 import org.lwjgl.util.vector.Vector3f;
 
+/**
+ * A static camera, at the world origin
+ * 
+ * @author abitofevrything
+ *
+ */
 public class DefaultCamera extends Camera {
 
 	@Override
@@ -10,7 +16,7 @@ public class DefaultCamera extends Camera {
 	}
 
 	@Override
-	public float getListenerPitch() {
+	public float getPitch() {
 		return 0;
 	}
 

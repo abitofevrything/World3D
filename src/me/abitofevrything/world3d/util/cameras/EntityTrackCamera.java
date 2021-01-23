@@ -5,6 +5,12 @@ import me.abitofevrything.world3d.entity.Entity;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
 
+/**
+ * A {@link Camera} that tracks en entity, mimicking it's position, roll, pitch and yaw
+ * 
+ * @author abitofevrything
+ *
+ */
 public class EntityTrackCamera extends Camera {
 
 	private Entity tracking;
@@ -13,6 +19,16 @@ public class EntityTrackCamera extends Camera {
 	private float distance;
 	private float pitchOffset, yawOffset, rollOffset;
 	
+	/**
+	 * Creates a {@link EntityTrackCamera}
+	 * 
+	 * @param entity The entity to track
+	 * @param distance The distance from the entity
+	 * @param centerOffset An offset relative to the entity's position to center this camera on
+	 * @param pitchOffset An offset relative to the entity's pitch to set this camera's pitch to
+	 * @param yawOffset An offset relative to the entity's yaw to set this camera's yaw to
+	 * @param rollOffset An offset relative to the entity's roll to set this camera's roll to
+	 */
 	public EntityTrackCamera(Entity entity, float distance, Vector3f centerOffset, float pitchOffset, float yawOffset, float rollOffset) {
 		this.tracking = entity;
 		this.distance = distance;
@@ -22,10 +38,23 @@ public class EntityTrackCamera extends Camera {
 		this.rollOffset = rollOffset;
 	}
 	
+	/**
+	 * Creates a {@link EntityTrackCamera}
+	 * 
+	 * @param entity The entity to track
+	 * @param distance The distance from the entity
+	 */
 	public EntityTrackCamera(Entity entity, float distance) {
 		this(entity, distance, new Vector3f(0, 0, 0), 0, 0, 0);
 	}
 	
+	/**
+	 * Creates a {@link EntityTrackCamera}
+	 * 
+	 * @param entity The entity to track
+	 * @param distance The distance from the entity
+	 * @param centerOffset An offset relative to the entity's position to center this camera on
+	 */
 	public EntityTrackCamera(Entity entity, float distance, Vector3f centerOffset) {
 		this(entity, distance, centerOffset, 0, 0, 0);
 	}
@@ -50,7 +79,7 @@ public class EntityTrackCamera extends Camera {
 	}
 
 	@Override
-	public float getListenerPitch() {
+	public float getPitch() {
 		return -tracking.getRx() + pitchOffset;
 	}
 
@@ -130,6 +159,5 @@ public class EntityTrackCamera extends Camera {
 
 	@Override
 	public void update() {}
-	
 	
 }

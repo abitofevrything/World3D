@@ -16,6 +16,9 @@ public class RenderEvent extends Event {
 		this.type = type;
 	}
 	
+	/**
+	 * @return The type of this render
+	 */
 	public String getType() {
 		return type;
 	}

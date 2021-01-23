@@ -2,6 +2,12 @@ package me.abitofevrything.world3d.util;
 
 import me.abitofevrything.world3d.rendering.opengl.Vao;
 
+/**
+ * A class to generate cubes
+ * 
+ * @author abitofevrything
+ *
+ */
 public class CubeGenerator {
 
 	private static final int[] INDICES = { 0, 1, 3, 1, 2, 3, 1, 5, 2, 2, 5, 6, 4, 7, 5, 5, 7, 6, 0,

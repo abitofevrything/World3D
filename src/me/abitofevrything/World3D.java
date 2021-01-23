@@ -23,6 +23,13 @@ import java.util.Objects;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 
+/**
+ * The main class for interacting with the engine.
+ * Handles updates, entities and display management
+ * 
+ * @author abitofevrything
+ *
+ */
 public class World3D {
 
 	private static Map<String, List<Entity>> entities = new HashMap<String, List<Entity>>();

@@ -17,6 +17,13 @@ import me.abitofevrything.world3d.rendering.shaders.ShaderProgram;
 import me.abitofevrything.world3d.textures.Texture;
 import me.abitofevrything.world3d.util.cameras.Camera;
 
+/**
+ * Represents a renderer
+ * 
+ * @author abitofevrything
+ *
+ * @param <S> The type of {@link ShaderProgram} to use for this renderers
+ */
 public abstract class Renderer<S extends ShaderProgram> extends EventSubscribable {
 
 	private S shader;
@@ -103,6 +110,8 @@ public abstract class Renderer<S extends ShaderProgram> extends EventSubscribabl
 	
 	/**
 	 * Indicates that this renderer should automatically render its designated batch on every frame renders
+	 * 
+	 * @param camera The camera to use for rendering
 	 */
 	public void scheduleRenders(Camera camera) {
 		new RenderEventListener() {
@@ -124,6 +133,11 @@ public abstract class Renderer<S extends ShaderProgram> extends EventSubscribabl
 		this.target = target;
 	}
 	
+	/**
+	 * Renders a mesh using the currently bound shader, textures and mesh
+	 * 
+	 * @param mesh The mesh to render. This should be bound with {@link Vao#bind(int...)} first
+	 */
 	protected static void renderMesh(Vao mesh) {
 		GL11.glDrawElements(GL11.GL_TRIANGLES, mesh.getIndexCount(), GL11.GL_UNSIGNED_INT, 0);
 	}

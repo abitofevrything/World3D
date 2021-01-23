@@ -1,5 +1,6 @@
 package me.abitofevrything.world3d.entity;
 
+import me.abitofevrything.World3D;
 import me.abitofevrything.world3d.audio.AudioSource;
 import me.abitofevrything.world3d.events.game.GameUpdateEvent;
 import me.abitofevrything.world3d.events.game.GameUpdateEventListener;
@@ -9,6 +10,17 @@ import me.abitofevrything.world3d.util.Utils;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
 
+/**
+ * Represents an Entity in the engine
+ * 
+ * @see World3D
+ * @see World3D#addEntity(Entity)
+ * @see AudioSource
+ * @see AnimatedModel
+ * 
+ * @author abitofevrything
+ *
+ */
 public class Entity extends AudioSource {
 
 	private AnimatedModel model;
@@ -19,6 +31,16 @@ public class Entity extends AudioSource {
 	private float rx, ry, rz;
 	private float scale;
 	
+	/**
+	 * Creates an {@link Entity}
+	 * 
+	 * @param model The model for this entity to use
+	 * @param position The position of this entity
+	 * @param rx The x rotation of this entity
+	 * @param ry The y rotation of this entity
+	 * @param rz The z rotation of this entity
+	 * @param scale The scale of this entity
+	 */
 	public Entity(AnimatedModel model, Vector3f position, float rx, float ry, float rz, float scale) {
 		super(position);
 		this.model = model;
@@ -42,6 +64,12 @@ public class Entity extends AudioSource {
 		}.listen();
 	}
 	
+	/**
+	 * Creates an {@link Entity}
+	 * 
+	 * @param model The model for this entity
+	 * @param position The position of this entity
+	 */
 	public Entity(AnimatedModel model, Vector3f position) {
 		this(model, position, 0, 0, 0, 1);
 	}

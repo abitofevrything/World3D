@@ -7,6 +7,16 @@ import java.util.Objects;
 import org.lwjgl.openal.AL10;
 import org.lwjgl.util.WaveData;
 
+/**
+ * Represents a sound that can be played
+ * 
+ * @see AudioSource#playSound(Sound)
+ * @see AudioSource
+ * @see AudioListener
+ * 
+ * @author abitofevrything
+ *
+ */
 public class Sound {
 
 	private static Map<String, Integer> loadedBuffers = new HashMap<String, Integer>();
@@ -16,6 +26,13 @@ public class Sound {
 	
 	private String name;
 	
+	/**
+	 * Creates a {@link Sound}
+	 * 
+	 * @param file The file to load the sound from. Must be .wav format
+	 * @param volume The volume to play this sound at
+	 * @param pitch The pitch to play this sound at
+	 */
 	public Sound(String file, float volume, float pitch) {
 		Objects.requireNonNull(file);
 		
@@ -43,14 +60,28 @@ public class Sound {
 		this.pitch = pitch;
 	}
 	
+	/**
+	 * Creates a {@link Sounds}
+	 * 
+	 * @param file The file to load the sound from. Must be .wav format
+	 */
 	public Sound(String file) {
 		this(file, 1, 1);
 	}
 	
+	/**
+	 * Creates a {@link Sound}
+	 * 
+	 * @param file The file o oad the sound from. Must be .wav format
+	 * @param volume The volume to play this sound at
+	 */
 	public Sound(String file, float volume) {
 		this(file, volume, 1);
 	}
 	
+	/**
+	 * Deletes all loaded sounds
+	 */
 	public static void deleteBuffers() {
 		for (int buffer : loadedBuffers.values()) {
 			AL10.alDeleteBuffers(buffer);

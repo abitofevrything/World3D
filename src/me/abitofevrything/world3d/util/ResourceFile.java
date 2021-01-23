@@ -1,6 +1,7 @@
 package me.abitofevrything.world3d.util;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
@@ -13,7 +14,7 @@ import java.io.InputStreamReader;
  */
 public class ResourceFile {
 
-	private static final String FILE_SEPARATOR = "/" /*System.getProperties().getProperty("file.separator")*/;
+	private static final String FILE_SEPARATOR = File.separator;
 
 	private String path;
 	private String name;

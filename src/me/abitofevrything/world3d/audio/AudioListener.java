@@ -8,10 +8,22 @@ import org.lwjgl.openal.AL;
 import org.lwjgl.openal.AL10;
 import org.lwjgl.util.vector.Vector3f;
 
+/**
+ * Represents an Entity that can listen to audio
+ * 
+ * @see AudioSource
+ * @see Sound
+ * 
+ * @author abitofevrything
+ *
+ */
 public class AudioListener {
 	
 	private static AudioListener bound;
 	
+	/**
+	 * Call to initialize OpenAL and setup 
+	 */
 	public static void init() {
 		try {
 			AL.create();
@@ -32,6 +44,14 @@ public class AudioListener {
 	private Vector3f position, velocity;
 	private float volume, pitch;
 	
+	/**
+	 * Creates an {@link AudioListener}
+	 * 
+	 * @param position The position of this listener
+	 * @param velocity The velocity of this listener
+	 * @param volume The volume to play sounds at when using this listener
+	 * @param pitch The pitch to play sounds at when using this listener
+	 */
 	public AudioListener(Vector3f position, Vector3f velocity, float volume, float pitch) {
 		this.position = position;
 		this.velocity = velocity;
@@ -39,22 +59,51 @@ public class AudioListener {
 		this.pitch = pitch;
 	}
 	
+	/**
+	 * Creates an {@link AudioListener}
+	 * 
+	 * @param position The position of this listener
+	 */
 	public AudioListener(Vector3f position) {
 		this(position, new Vector3f(0,0,0), 1, 1);
 	}
 	
+	/**
+	 * Creates an {@link AudioListener}
+	 * 
+	 * @param position The position of this listener
+	 * @param velocity The velocityof this listener
+	 */
 	public AudioListener(Vector3f position, Vector3f velocity) {
 		this(position, velocity, 1, 1);
 	}
 	
+	/**
+	 * Creats an {@link AudioListener}
+	 * 
+	 * @param position The position of this listener
+	 * @param velocity The velcity of this listenr
+	 * @param volume The volume to play sounds at when using this listener
+	 */
 	public AudioListener(Vector3f position, Vector3f velocity, float volume) {
 		this(position, velocity, volume, 1);
 	}
 	
+	/**
+	 * Creates an {@link AudioListener}
+	 * 
+	 * @param position The position of this listener
+	 * @param volume The volume to play sounds at when using this listener
+	 */
 	public AudioListener(Vector3f position, float volume) {
 		this(position, new Vector3f(0,0,0), volume, 1);
 	}
 	
+	/**
+	 * Binds this listener to the audio output
+	 * 
+	 * Sounds played with {@link AudioSource#playSound(Sound)} will now be played to this listener
+	 */
 	public void bind() {
 		bound = this;
 		

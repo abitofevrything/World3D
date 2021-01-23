@@ -1,5 +1,11 @@
 package me.abitofevrything.world3d.util;
 
+/**
+ * A float that blends smoothly from one value to another
+ * 
+ * @author karl
+ *
+ */
 public class SmoothFloat {
 	
 	private final float agility;

@@ -10,9 +10,16 @@ import me.abitofevrything.world3d.rendering.opengl.OpenGlUtils;
 import me.abitofevrything.world3d.rendering.opengl.Vao;
 import me.abitofevrything.world3d.util.ResourceFile;
 
+/**
+ * A post-processinf effect
+ * Can be used alone or in a {@link PostProcessingProgram}
+ * 
+ * @author abitofevrything
+ *
+ */
 public class PostProcessingEffect extends EventSubscribable implements Cloneable {
 	
-	private static final Vao QUAD = /*CubeGenerator.generateCube(1);*/ Vao.create();
+	private static final Vao QUAD = Vao.create();
 	
 	static {
 		QUAD.bind();
@@ -69,6 +76,13 @@ public class PostProcessingEffect extends EventSubscribable implements Cloneable
 		}
 	};
 	
+	/**
+	 * Creates an effect
+	 * 
+	 * @param fragmentShader The fragment shader to use for this effect
+	 * @param input The input {@link RenderTarget}
+	 * @param output The output {@link RenderTarget}
+	 */
 	public PostProcessingEffect(String fragmentShader, RenderTarget input, RenderTarget output) {
 		this(new PostProcessingShader(new ResourceFile(fragmentShader)), input, output);
 	}

@@ -3,13 +3,17 @@ package me.abitofevrything.world3d.util.cameras;
 import me.abitofevrything.world3d.audio.AudioListener;
 import me.abitofevrything.world3d.events.game.GameUpdateEvent;
 import me.abitofevrything.world3d.events.game.GameUpdateEventListener;
-import me.abitofevrything.world3d.events.output.RenderEvent;
-import me.abitofevrything.world3d.events.output.RenderEventListener;
 
 import org.lwjgl.opengl.Display;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
 
+/**
+ * Represents a Camera that can be used to render from in the engine
+ * 
+ * @author abitofevrything
+ *
+ */
 public abstract class Camera extends AudioListener {
 	
 	public static final float FOV = 70;
@@ -18,6 +22,11 @@ public abstract class Camera extends AudioListener {
 	
 	private Vector3f prevPosition;
 	
+	/**
+	 * Call to initialise the camera
+	 * 
+	 * Sets up all the update events
+	 */
 	public Camera() {
 		super(new Vector3f(0,0,0));
 		
@@ -27,17 +36,10 @@ public abstract class Camera extends AudioListener {
 			
 			@Override
 			public void onEvent(GameUpdateEvent event) {
+				update();
 				setPosition(getPosition());
 				setVelocity(Vector3f.sub(getPosition(), prevPosition, null));
 				prevPosition = getPosition();
-			}
-		}.listen();
-		
-		new RenderEventListener() {
-			
-			@Override
-			public void onEvent(RenderEvent event) {
-				update();
 			}
 		}.listen();
 	}
@@ -76,7 +78,7 @@ public abstract class Camera extends AudioListener {
 	
 	public abstract Vector3f getPosition();
 	
-	public abstract float getListenerPitch();
+	public abstract float getPitch();
 	public abstract float getYaw();
 	public abstract float getRoll();
 	

@@ -11,6 +11,18 @@ import me.abitofevrything.world3d.events.input.MouseScrollEventListener;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.util.vector.Vector3f;
 
+/**
+ * An fully user-controlled {@link Camera}
+ * 
+ * Controls are :
+ *  - Move mouse : Rotate camera
+ *  - Press W / S : Move fowards / backwards
+ *  - Press A / D : Move left / right
+ *  - Press Shift / Space : Move up / down
+ * 
+ * @author abitofevrything
+ *
+ */
 public class FreeCamera extends Camera {
 
 	private static final float PITCH_SENSITIVITY = 0.3f;
@@ -20,10 +32,11 @@ public class FreeCamera extends Camera {
 	private float yaw = 0, pitch = 0;
 	private Vector3f position;
 	
-	static {
-		
-	}
-	
+	/**
+	 * Creates a {@link FreeCamera}
+	 * 
+	 * @param position The original position for this camera
+	 */
 	public FreeCamera(Vector3f position) {
 		this.position = position;
 		
@@ -74,6 +87,9 @@ public class FreeCamera extends Camera {
 		}.listen();
 	}
 
+	/**
+	 * Creates a {@link FreeCamera} at the origin
+	 */
 	public FreeCamera() {
 		this(new Vector3f(0, 0, 0));
 	}
@@ -87,7 +103,7 @@ public class FreeCamera extends Camera {
 	}
 
 	@Override
-	public float getListenerPitch() {
+	public float getPitch() {
 		return pitch;
 	}
 
@@ -105,7 +121,7 @@ public class FreeCamera extends Camera {
 		this.yaw = yaw;
 	}
 	
-	public void setListenerPitch(float pitch) {
+	public void setPitch(float pitch) {
 		this.pitch = pitch;
 	}
 	

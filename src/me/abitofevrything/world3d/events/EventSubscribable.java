@@ -8,6 +8,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Manages events on a per-object scale
+ * 
+ * @see Event
+ * @see EventListener
+ * 
+ * @author abitofevrything
+ *
+ */
 public class EventSubscribable {
 
 	private Map<Class<?>, List<EventListener<?>>> listeners = new HashMap<Class<?>, List<EventListener<?>>>();

@@ -9,6 +9,13 @@ import java.util.List;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 
+/**
+ * Represents a shader
+ * A shader is used to render elements to the screen
+ * 
+ * @author abitofevrything
+ *
+ */
 public class ShaderProgram {
 
 	private int programID;

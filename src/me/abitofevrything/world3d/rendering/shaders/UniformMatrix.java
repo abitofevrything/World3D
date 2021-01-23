@@ -6,6 +6,12 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.util.vector.Matrix4f;
 
+/**
+ * Represents a uniform {@link Matrix4f}
+ * 
+ * @author abitofevrything
+ *
+ */
 public class UniformMatrix extends Uniform{
 	
 	private static FloatBuffer matrixBuffer = BufferUtils.createFloatBuffer(16);

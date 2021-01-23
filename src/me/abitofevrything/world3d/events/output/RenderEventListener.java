@@ -1,9 +1,13 @@
 package me.abitofevrything.world3d.events.output;
 
+import me.abitofevrything.World3D;
 import me.abitofevrything.world3d.events.EventListener;
 
 /**
- * An event listener for {@link RenderUpdate}s
+ * An event for {@link RenderEvent}
+ * 
+ * @see World3D#update()
+ * @see RenderEvent
  * 
  * @author abitofevrything
  *

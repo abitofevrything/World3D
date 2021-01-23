@@ -2,6 +2,12 @@ package me.abitofevrything.world3d.rendering.shaders;
 
 import org.lwjgl.opengl.GL20;
 
+/**
+ * Represents a uniform float
+ * 
+ * @author abitofevrything
+ *
+ */
 public class UniformFloat extends Uniform{
 	
 	private float currentValue;

@@ -6,6 +6,8 @@ import java.util.List;
 import me.abitofevrything.world3d.rendering.RenderTarget;
 
 /**
+ * A program for post processing effects. Automatically pipes the output of one effect into another
+ * 
  * @author abitofevrything
  */
 public class PostProcessingProgram {

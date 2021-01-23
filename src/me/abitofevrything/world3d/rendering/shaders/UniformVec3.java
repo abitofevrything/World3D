@@ -3,6 +3,12 @@ package me.abitofevrything.world3d.rendering.shaders;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.util.vector.Vector3f;
 
+/**
+ * Represents a uniform {@link Vector3f}
+ * 
+ * @author abitofevrything
+ *
+ */
 public class UniformVec3 extends Uniform {
 	private float currentX;
 	private float currentY;

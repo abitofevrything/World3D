@@ -4,6 +4,12 @@ import me.abitofevrything.world3d.rendering.shaders.ShaderProgram;
 import me.abitofevrything.world3d.rendering.shaders.UniformSampler;
 import me.abitofevrything.world3d.util.ResourceFile;
 
+/**
+ * A shader for post processing effects
+ * 
+ * @author abitofevrything
+ *
+ */
 public class PostProcessingShader extends ShaderProgram {
 
 	public UniformSampler colourInput = new UniformSampler("colourInput");
