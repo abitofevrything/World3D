@@ -2,8 +2,6 @@
 .settings/
 .classpath
 .project
-
-#Compiled project
 bin/
 
 #Old code
