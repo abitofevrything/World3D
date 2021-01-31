@@ -2,7 +2,6 @@ package me.abitofevrything.world3d.rendering;
 
 import java.nio.ByteBuffer;
 
-import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.GL14;
@@ -11,6 +10,7 @@ import org.lwjgl.opengl.GL30;
 import me.abitofevrything.world3d.events.EventSubscribable;
 import me.abitofevrything.world3d.events.output.RenderEvent;
 import me.abitofevrything.world3d.textures.Texture;
+import me.abitofevrything.world3d.util.Display;
 
 /**
  * Represents an FBO - An item that can be drawn and read from
@@ -107,7 +107,7 @@ public class RenderTarget extends EventSubscribable {
 	}
 	
 	public void finishRender() {
-		super.triggerEventForSubscribers(new RenderEvent("contentUpdate"));
+		super.triggerEventForSubscribers(new RenderEvent(RenderEvent.RENDER_TARGET_UPDATE));
 	}
 		
 	public int getId() {

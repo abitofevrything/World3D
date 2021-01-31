@@ -1,15 +1,20 @@
 package me.abitofevrything.world3d.events.input;
 
-import me.abitofevrything.world3d.events.EventManager;
-import me.abitofevrything.world3d.events.output.RenderEvent;
-import me.abitofevrything.world3d.events.output.RenderEventListener;
+import static org.lwjgl.glfw.GLFW.*;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
-import org.lwjgl.util.vector.Vector2f;
+import org.lwjgl.glfw.GLFWCharCallback;
+import org.lwjgl.glfw.GLFWCursorPosCallback;
+import org.lwjgl.glfw.GLFWKeyCallback;
+import org.lwjgl.glfw.GLFWMouseButtonCallback;
+import org.lwjgl.glfw.GLFWScrollCallback;
+
+import me.abitofevrything.world3d.events.EventManager;
+import me.abitofevrything.world3d.events.game.GameUpdateEvent;
+import me.abitofevrything.world3d.events.game.GameUpdateEventListener;
+import me.abitofevrything.world3d.util.Display;
 
 /**
  * A class for managing input
@@ -19,257 +24,179 @@ import org.lwjgl.util.vector.Vector2f;
  */
 public class Input {
 
-	private static int MDX, MDY, MDW;
-	
-	private static Map<Integer, Boolean> mousePressedButtons = new HashMap<Integer, Boolean>();
-	private static Map<Integer, Boolean> keyboardPressedKeys = new HashMap<Integer, Boolean>();
-	
-	/**
-	 * Initializes the input manager and the event triggers
+	/* TODO
+	 * 
+	 * MouseClicked
+	 * 
 	 */
+	
+	private static boolean mouseGrabbed = false, ignoreMovedCallback = false;
+	private static int grabbedX, grabbedY;
+	
+	private static Map<Integer, Boolean> pressedKeys = new HashMap<Integer, Boolean>();
+	private static Map<Integer, Boolean> pressedButtons  = new HashMap<Integer, Boolean>();
+	
+	@SuppressWarnings("unused")
+	private static GLFWKeyCallback keyCallback;
+	@SuppressWarnings("unused")
+	private static GLFWCharCallback charCallback;
+	@SuppressWarnings("unused")
+	private static GLFWCursorPosCallback cursorPosCallback;
+	@SuppressWarnings("unused")
+	private static GLFWMouseButtonCallback mouseButtonCallback;
+	@SuppressWarnings("unused")
+	private static GLFWScrollCallback scrollCallback;
+	
+	private static int prevCursorX, prevCursorY;
+	
 	public static void init() {
-		
-		new RenderEventListener() {
+		/* KeyPressed / KeyReleased & data management for KeyHeld */
+		glfwSetKeyCallback(Display.getHandle(), (keyCallback = new GLFWKeyCallback() {
 			
 			@Override
-			public void onEvent(RenderEvent event) {
-				if (Mouse.isCreated() && Keyboard.isCreated()) {
-					update();
+			public void invoke(long window, int key, int scancode, int action, int mode) {
+				
+				if (action == GLFW_PRESS) {
+					EventManager.triggerEvent(new KeyPressedEvent(key));
+					pressedKeys.put(key, true);
+				} else if (action == GLFW_RELEASE) {
+					EventManager.triggerEvent(new KeyReleasedEvent(key));
+					pressedKeys.put(key, false);
 				}
 			}
-		}.listen();
+			
+		}));
 		
-		new MouseMovedEventListener() {
+		/* KeyHeld, MouseHeld */
+		new GameUpdateEventListener() {
 			
 			@Override
-			public void onEvent(MouseMovedEvent event) {
-				for (int i = 0; i < getMouseButtonCount(); i++) {
-					if (isMouseButtonDown(i)) {
-						EventManager.triggerEvent(new MouseDraggedEvent(i, event.getStartX(), event.getStartY(), event.getEndX(), event.getEndY()));
+			public void onEvent(GameUpdateEvent event) {
+				for (int key : pressedKeys.keySet()) {
+					if (pressedKeys.get(key)) {
+						EventManager.triggerEvent(new KeyHeldEvent(key));
+					}
+				}
+				
+				for (int button : pressedButtons.keySet()) {
+					if (pressedButtons.get(button)) {
+						EventManager.triggerEvent(new MouseHeldEvent(button));
 					}
 				}
 			}
+			
 		}.listen();
 		
-		for (int i = 0; i < Mouse.getButtonCount(); i++) {
-			mousePressedButtons.put(i, false);
-		}
+		/* KeyTyped */
+		glfwSetCharCallback(Display.getHandle(), (charCallback = new GLFWCharCallback() {
+			
+			@Override
+			public void invoke(long window, int key) {
+				EventManager.triggerEvent(new KeyTypedEvent(key));
+			}
+			
+		}));
 		
-		for (int i = 0; i < Keyboard.getKeyCount(); i++) {
-			keyboardPressedKeys.put(i, false);
-		}
-	}
-	
-	private static void update() {
-		MDX = Mouse.getDX();
-		MDY = Mouse.getDY();
-		MDW = Mouse.getDWheel();
-		
-		if (MDX != 0 || MDY != 0) {
-			EventManager.triggerEvent(new MouseMovedEvent(Mouse.getX() - MDX, Mouse.getY() - MDY, Mouse.getX(), Mouse.getY()));
-		}
-		
-		if (MDW != 0) {
-			EventManager.triggerEvent(new MouseScrollEvent(MDW));
-		}
-		
-		for (int i = 0; i < Mouse.getButtonCount(); i++) {
-			if (!mousePressedButtons.get(i)) {
-				if (Mouse.isButtonDown(i)) {
-					EventManager.triggerEvent(new MousePressedEvent(i, Mouse.getX(), Mouse.getY()));
-					mousePressedButtons.put(i, true);
+		/* MouseMoved / MouseDragged */
+		glfwSetCursorPosCallback(Display.getHandle(), (cursorPosCallback = new GLFWCursorPosCallback() {
+			
+			@Override
+			public void invoke(long window, double x, double y) {
+				if (ignoreMovedCallback) {
+					ignoreMovedCallback = false;
+					return;
 				}
-			} else {
-				if (!Mouse.isButtonDown(i)) {
-					EventManager.triggerEvent(new MouseReleasedEvent(i, Mouse.getX(), Mouse.getY()));
-					mousePressedButtons.put(i, false);
+				
+				EventManager.triggerEvent(new MouseMovedEvent(prevCursorX, prevCursorY, (int)x, (int)y));
+				
+				for (int button : pressedButtons.keySet()) {
+					if (pressedButtons.get(button)) {
+						EventManager.triggerEvent(new MouseDraggedEvent(button, prevCursorX, prevCursorY, (int)x, (int)y));
+					}
+				}
+				
+				prevCursorX = (int)x;
+				prevCursorY = (int)y;
+				
+				if (mouseGrabbed) {
+					ignoreMovedCallback = true;
+					setMousePos(Display.getWidth() / 2, Display.getHeight() / 2);
 				}
 			}
 			
-			if (Mouse.isButtonDown(i)) {
-				EventManager.triggerEvent(new MouseButtonHeldEvent(i));
-			}
-		}
+		}));
 		
-		for (int i = 0; i < Keyboard.getKeyCount(); i++) {
-			if (!keyboardPressedKeys.get(i)) {
-				if (Keyboard.isKeyDown(i)) {
-					EventManager.triggerEvent(new KeyPressedEvent(i));
-					keyboardPressedKeys.put(i, true);
+		/* MousePressed / MouseReleased / MouseClicked */
+		glfwSetMouseButtonCallback(Display.getHandle(), (mouseButtonCallback = new GLFWMouseButtonCallback() {
+			
+			@Override
+			public void invoke(long window, int button, int action, int mode) {
+				if (action == GLFW_PRESS) {
+					EventManager.triggerEvent(new MousePressedEvent(button, prevCursorX, prevCursorY));
+					pressedButtons.put(button, true);
+					
+					int x = prevCursorX, y = prevCursorY;
+					
+					new MouseReleasedEventListener() {
+						
+						@Override
+						public void onEvent(MouseReleasedEvent event) {
+							if (prevCursorX == x && prevCursorY == y) {
+								EventManager.triggerEvent(new MouseClickedEvent(button, x, y));
+							}
+						}
+						
+					}.listen();
+					
+				} else if (action == GLFW_RELEASE) {
+					EventManager.triggerEvent(new MouseReleasedEvent(button, prevCursorX, prevCursorY));
+					pressedButtons.put(button, false);
 				}
-			} else {
-				if (!Keyboard.isKeyDown(i)) {
-					EventManager.triggerEvent(new KeyReleasedEvent(i));
-					keyboardPressedKeys.put(i, false);
-				}
+			}
+		}));
+		
+		/* MouseScrolled */
+		glfwSetScrollCallback(Display.getHandle(), (scrollCallback = new GLFWScrollCallback() {
+			
+			@Override
+			public void invoke(long window, double dx, double dy) {
+				EventManager.triggerEvent(new MouseScrolledEvent((int)dy * 100));
 			}
 			
-			if (Keyboard.isKeyDown(i)) {
-				EventManager.triggerEvent(new KeyHeldEvent(i));
-			}
-		}
+		}));
 	}
 	
-	/**
-	 * Chackes whever a keyboard key is pressed or not
-	 * 
-	 * @param key The key id to check.
-	 * @return A boolean, true if the key is pressed, false otherwise
-	 * 
-	 * @see Keyboard
-	 */
-	public boolean isKeyDown(int key) {
-		return Keyboard.isKeyDown(key);
-	}
-
-	/**
-	 * Gets the mouse delta x
-	 * 
-	 * @return The delta x since the last update
-	 */
-	public static float getMouseDX() {
-		return MDX;
+	public static boolean isKeyPressed(int key) {
+		return pressedKeys.get(key) == null ? false : pressedKeys.get(key);
 	}
 	
-	/**
-	 * Gets the mouse delta y
-	 * 
-	 * @return The delta y since the last update
-	 */
-	public static float getMouseDY() {
-		return MDY;
+	public static boolean isMouseButtonPressed(int button) {
+		return pressedButtons.get(button) == null ? false : pressedButtons.get(button);
 	}
 	
-	/**
-	 * Gets the mouse wheel delta
-	 * 
-	 * @return The mouse wheel delta since the last update
-	 */
-	public static float getMouseDWheel() {
-		return MDW;
+	public static void setMousePos(int x, int y) {
+		prevCursorX = x;
+		prevCursorY = y;
+		
+		glfwSetCursorPos(Display.getHandle(), x, y);
 	}
 	
-	/**
-	 * Gets the mouse position delta
-	 * 
-	 * @return The mouse position delta since the last update
-	 */
-	public static Vector2f getMouseDeltaPosition() {
-		return new Vector2f(MDX, MDY);
-	}
-	
-	/**
-	 * Gets the x position of the mouse
-	 * 
-	 * @return The x position of the mouse
-	 */
-	public static float getMouseX() {
-		return Mouse.getX();
-	}
-	
-	/**
-	 * Gets the y position of the mouse
-	 * 
-	 * @return The y position of the mouse
-	 */
-	public static float getMouseY() {
-		return Mouse.getY();
-	}
-	
-	/**
-	 * Sets the mouse to be "grabbed" or not
-	 * "Grabbed" means that the mouse is hidden and bound to the window
-	 * 
-	 * @param grabbed true if the mouse is to be grabbed, false otherwise
-	 */
 	public static void setMouseGrabbed(boolean grabbed) {
-		Mouse.setGrabbed(grabbed);
-	}
-	
-	/**
-	 * Get the number if buttons on the mouse
-	 * 
-	 * @return The number of buttons on the mouse
-	 */
-	public static int getMouseButtonCount() {
-		return Mouse.getButtonCount();
-	}
-	
-	/**
-	 * Gets the index of a given mouse button
-	 * 
-	 * @param name The name of the button to retrieve. Format : "BUTTON[x]" where [x] is a number from 0 to 16
-	 * @return The index of the button
-	 */
-	public static int getMouseButtonIndex(String name) {
-		return Mouse.getButtonIndex(name);
-	}
-	
-	/**
-	 * Gets the name of a button for a given index
-	 * 
-	 * @param index The index of the button to retrieve
-	 * @return The name of the button
-	 */
-	public static String getMouseButtonName(int index) {
-		return Mouse.getButtonName(index);
-	}
-	
-	/**
-	 * Chacks if a button on the mouse is pressed
-	 * 
-	 * @param button The index of the button to check
-	 * @return true if the button is pressed, false otherwise
-	 */
-	public static boolean isMouseButtonDown(int button) {
-		return Mouse.isButtonDown(button);
-	}
-	
-	/**
-	 * Checks if the mouse has a wheel
-	 * 
-	 * @return true if the mouse has a wheel, false otherwise
-	 */
-	public static boolean mouseHasWheel() {
-		return Mouse.hasWheel();
-	}
-	
-	/**
-	 * Checks if the mouse is "grabbed"
-	 * "Grabbed" means that the mouse is hidden and bound to the window
-	 * 
-	 * @return true if the mouse is grabbed, false otherwise
-	 */
-	public static boolean isMouseGrabbd() {
-		return Mouse.isGrabbed();
-	}
-	
-	/**
-	 * Checks if the mouse is inside the window
-	 * 
-	 * @return true if the mouse is inside the window, false otherwise
-	 */
-	public static boolean isMouseInsideWindow() {
-		return Mouse.isInsideWindow();
-	}
-	
-	/**
-	 * Sets the position of the mouse relative to the window bottom-left
-	 * 
-	 * @param x the x position of the mouse
-	 * @param y the y position of the mouse
-	 */
-	public static void setMousePosition(int x, int y) {
-		Mouse.setCursorPosition(x, y);
-	}
-	
-	/**
-	 * Gets the number of keys on the keyboard
-	 * 
-	 * @return the number of keys on the keyboard
-	 */
-	public static int getKeyboardNumKeys() {
-		return Keyboard.getKeyCount();
+		if (grabbed && !mouseGrabbed) {
+			grabbedX = prevCursorX;
+			grabbedY = prevCursorY;
+			
+			ignoreMovedCallback = true;
+			setMousePos(Display.getWidth() / 2, Display.getHeight() / 2);
+		} else if (!grabbed && grabbed) {
+			//Release mouse at grabbed coords
+			ignoreMovedCallback = true;
+			setMousePos(grabbedX, grabbedY);
+		}
+		
+		glfwSetInputMode(Display.getHandle(), GLFW_CURSOR, grabbed ? GLFW_CURSOR_HIDDEN : GLFW_CURSOR_NORMAL);
+		
+		mouseGrabbed = grabbed;
 	}
 	
 }

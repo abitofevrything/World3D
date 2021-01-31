@@ -4,9 +4,9 @@ import me.abitofevrything.world3d.entity.Entity;
 import me.abitofevrything.world3d.events.input.Input;
 import me.abitofevrything.world3d.events.input.MouseMovedEvent;
 import me.abitofevrything.world3d.events.input.MouseMovedEventListener;
-import me.abitofevrything.world3d.events.input.MouseScrollEvent;
-import me.abitofevrything.world3d.events.input.MouseScrollEventListener;
-import me.abitofevrything.world3d.util.DisplayManager;
+import me.abitofevrything.world3d.events.input.MouseScrolledEvent;
+import me.abitofevrything.world3d.events.input.MouseScrolledEventListener;
+import me.abitofevrything.world3d.util.Display;
 import me.abitofevrything.world3d.util.SmoothFloat;
 
 import org.lwjgl.util.vector.Vector3f;
@@ -49,10 +49,10 @@ public class SmoothEntityOrbitCamera extends EntityTrackCamera {
 		this.yawOffset = new SmoothFloat(yawOffset, 10);
 		this.rollOffset = new SmoothFloat(rollOffset, 10);
 		
-		new MouseScrollEventListener() {
+		new MouseScrolledEventListener() {
 			
 			@Override
-			public void onEvent(MouseScrollEvent event) {
+			public void onEvent(MouseScrolledEvent event) {
 				SmoothEntityOrbitCamera.this.distance.increaseTarget((getDistance() + 10) * -event.getDWheel() / (1000/SCROLL_SENSITIVITY));
 				SmoothEntityOrbitCamera.this.distance.clamp(MIN_DISTANCE, MAX_DISTANCE);
 			}
@@ -94,10 +94,9 @@ public class SmoothEntityOrbitCamera extends EntityTrackCamera {
 	public void update() {
 		Input.setMouseGrabbed(true);
 		
-		distance.update(DisplayManager.getFrameTime());
-		pitchOffset.update(DisplayManager.getFrameTime());
-		yawOffset.update(DisplayManager.getFrameTime());
-		rollOffset.update(DisplayManager.getFrameTime());
+		distance.update(Display.getFrameTime());
+		yawOffset.update(Display.getFrameTime());
+		rollOffset.update(Display.getFrameTime());
 		
 		setDistance(distance.get());
 		setPitchOffset(pitchOffset.get());

@@ -5,12 +5,13 @@ import me.abitofevrything.world3d.events.input.KeyHeldEvent;
 import me.abitofevrything.world3d.events.input.KeyHeldEventListener;
 import me.abitofevrything.world3d.events.input.MouseMovedEvent;
 import me.abitofevrything.world3d.events.input.MouseMovedEventListener;
-import me.abitofevrything.world3d.events.input.MouseScrollEvent;
-import me.abitofevrything.world3d.events.input.MouseScrollEventListener;
-import me.abitofevrything.world3d.util.DisplayManager;
+import me.abitofevrything.world3d.events.input.MouseScrolledEvent;
+import me.abitofevrything.world3d.events.input.MouseScrolledEventListener;
+import me.abitofevrything.world3d.util.Display;
 import me.abitofevrything.world3d.util.SmoothFloat;
-import org.lwjgl.input.Keyboard;
 import org.lwjgl.util.vector.Vector3f;
+
+import static org.lwjgl.glfw.GLFW.*;
 
 /**
  * A smooth, fully user-controlled {@link Camera}
@@ -64,30 +65,30 @@ public class SmoothFreeCamera extends Camera {
 			@Override
 			public void onEvent(KeyHeldEvent event) {
 				
-				if (event.getKey() == Keyboard.KEY_W) {
-					x.increaseTarget((float)Math.sin(Math.toRadians(yaw)) * speed * DisplayManager.getFrameTime());
-					z.increaseTarget((float)-Math.cos(Math.toRadians(yaw)) * speed * DisplayManager.getFrameTime());
-				} else if (event.getKey() == Keyboard.KEY_S) {
-					x.increaseTarget((float)-Math.sin(Math.toRadians(yaw)) * speed * DisplayManager.getFrameTime());
-					z.increaseTarget((float)Math.cos(Math.toRadians(yaw)) * speed * DisplayManager.getFrameTime());
-				} else if (event.getKey() == Keyboard.KEY_SPACE) {
-					y.increaseTarget(speed * DisplayManager.getFrameTime());
-				} else if (event.getKey() == Keyboard.KEY_LSHIFT) {
-					y.increaseTarget(-speed * DisplayManager.getFrameTime());
-				} else if (event.getKey() == Keyboard.KEY_D) {
-					x.increaseTarget((float)Math.cos(Math.toRadians(yaw)) * speed * DisplayManager.getFrameTime());
-					z.increaseTarget((float)Math.sin(Math.toRadians(yaw)) * speed * DisplayManager.getFrameTime());
-				} else if (event.getKey() == Keyboard.KEY_A) {
-					x.increaseTarget((float)-Math.cos(Math.toRadians(yaw)) * speed * DisplayManager.getFrameTime());
-					z.increaseTarget((float)-Math.sin(Math.toRadians(yaw)) * speed * DisplayManager.getFrameTime());
+				if (event.getKey() == GLFW_KEY_W) {
+					x.increaseTarget((float)Math.sin(Math.toRadians(yaw)) * speed * Display.getFrameTime());
+					z.increaseTarget((float)-Math.cos(Math.toRadians(yaw)) * speed * Display.getFrameTime());
+				} else if (event.getKey() == GLFW_KEY_S) {
+					x.increaseTarget((float)-Math.sin(Math.toRadians(yaw)) * speed * Display.getFrameTime());
+					z.increaseTarget((float)Math.cos(Math.toRadians(yaw)) * speed * Display.getFrameTime());
+				} else if (event.getKey() == GLFW_KEY_SPACE) {
+					y.increaseTarget(speed * Display.getFrameTime());
+				} else if (event.getKey() == GLFW_KEY_LEFT_SHIFT) {
+					y.increaseTarget(-speed * Display.getFrameTime());
+				} else if (event.getKey() == GLFW_KEY_D) {
+					x.increaseTarget((float)Math.cos(Math.toRadians(yaw)) * speed * Display.getFrameTime());
+					z.increaseTarget((float)Math.sin(Math.toRadians(yaw)) * speed * Display.getFrameTime());
+				} else if (event.getKey() == GLFW_KEY_A) {
+					x.increaseTarget((float)-Math.cos(Math.toRadians(yaw)) * speed * Display.getFrameTime());
+					z.increaseTarget((float)-Math.sin(Math.toRadians(yaw)) * speed * Display.getFrameTime());
 				}
 			}
 		}.listen();
 		
-		new MouseScrollEventListener() {
+		new MouseScrolledEventListener() {
 			
 			@Override
-			public void onEvent(MouseScrollEvent event) {
+			public void onEvent(MouseScrolledEvent event) {
 				speed += (speed * event.getDWheel()) / 1000;
 			}
 		}.listen();
@@ -119,9 +120,9 @@ public class SmoothFreeCamera extends Camera {
 	public void update() {
 		Input.setMouseGrabbed(true);
 		
-		x.update(DisplayManager.getFrameTime());
-		y.update(DisplayManager.getFrameTime());
-		z.update(DisplayManager.getFrameTime());
+		x.update(Display.getFrameTime());
+		y.update(Display.getFrameTime());
+		z.update(Display.getFrameTime());
 	}
 
 	@Override

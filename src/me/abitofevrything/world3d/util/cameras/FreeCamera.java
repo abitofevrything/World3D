@@ -5,11 +5,12 @@ import me.abitofevrything.world3d.events.input.KeyHeldEvent;
 import me.abitofevrything.world3d.events.input.KeyHeldEventListener;
 import me.abitofevrything.world3d.events.input.MouseMovedEvent;
 import me.abitofevrything.world3d.events.input.MouseMovedEventListener;
-import me.abitofevrything.world3d.events.input.MouseScrollEvent;
-import me.abitofevrything.world3d.events.input.MouseScrollEventListener;
+import me.abitofevrything.world3d.events.input.MouseScrolledEvent;
+import me.abitofevrything.world3d.events.input.MouseScrolledEventListener;
 
-import org.lwjgl.input.Keyboard;
 import org.lwjgl.util.vector.Vector3f;
+
+import static org.lwjgl.glfw.GLFW.*;
 
 /**
  * An fully user-controlled {@link Camera}
@@ -62,28 +63,30 @@ public class FreeCamera extends Camera {
 			@Override
 			public void onEvent(KeyHeldEvent event) {
 				
-				if (event.getKey() == Keyboard.KEY_W) {
+				if (event.getKey() == GLFW_KEY_W) {
 					Vector3f.add(position, (Vector3f)new Vector3f((float)Math.sin(Math.toRadians(yaw)) * speed, 0, (float)-Math.cos(Math.toRadians(yaw)) * speed), position);
-				} else if (event.getKey() == Keyboard.KEY_S) {
+				} else if (event.getKey() == GLFW_KEY_S) {
 					Vector3f.add(position, (Vector3f)new Vector3f((float)Math.sin(Math.toRadians(yaw)) * speed, 0, (float)-Math.cos(Math.toRadians(yaw)) * speed).negate(null) , position);
-				} else if (event.getKey() == Keyboard.KEY_SPACE) {
+				} else if (event.getKey() == GLFW_KEY_SPACE) {
 					Vector3f.add(position, (Vector3f)new Vector3f(0, speed, 0), position);
-				} else if (event.getKey() == Keyboard.KEY_LSHIFT) {
+				} else if (event.getKey() == GLFW_KEY_LEFT_SHIFT) {
 					Vector3f.add(position, (Vector3f)new Vector3f(0, -speed, 0), position);
-				} else if (event.getKey() == Keyboard.KEY_D) {
+				} else if (event.getKey() == GLFW_KEY_D) {
 					Vector3f.add(position, (Vector3f)new Vector3f((float)Math.cos(Math.toRadians(yaw)) * speed, 0, (float)Math.sin(Math.toRadians(yaw)) * speed) , position);
-				} else if (event.getKey() == Keyboard.KEY_A) {
+				} else if (event.getKey() == GLFW_KEY_A) {
 					Vector3f.add(position, (Vector3f)new Vector3f((float)Math.cos(Math.toRadians(yaw)) * speed, 0, (float)Math.sin(Math.toRadians(yaw)) * speed).negate(null) , position);
 				}
 			}
+			
 		}.listen();
 		
-		new MouseScrollEventListener() {
+		new MouseScrolledEventListener() {
 			
 			@Override
-			public void onEvent(MouseScrollEvent event) {
+			public void onEvent(MouseScrolledEvent event) {
 				speed += (speed * event.getDWheel()) / 1000;
 			}
+			
 		}.listen();
 	}
 
@@ -123,6 +126,10 @@ public class FreeCamera extends Camera {
 	
 	public void setPitch(float pitch) {
 		this.pitch = pitch;
+	}
+	
+	public void setPosition(Vector3f position) {
+		this.position = position;
 	}
 	
 }

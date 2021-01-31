@@ -1,12 +1,18 @@
 package me.abitofevrything.world3d.audio;
 
+import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
+
+import org.lwjgl.openal.AL;
+import org.lwjgl.openal.ALC;
+import org.lwjgl.openal.ALCCapabilities;
+import org.lwjgl.util.vector.Vector3f;
+
 import me.abitofevrything.world3d.events.game.GameCloseEvent;
 import me.abitofevrything.world3d.events.game.GameCloseEventListener;
 
-import org.lwjgl.LWJGLException;
-import org.lwjgl.openal.AL;
-import org.lwjgl.openal.AL10;
-import org.lwjgl.util.vector.Vector3f;
+import static org.lwjgl.openal.ALC10.*;
+import static org.lwjgl.openal.AL10.*;
 
 /**
  * Represents an Entity that can listen to audio
@@ -21,24 +27,33 @@ public class AudioListener {
 	
 	private static AudioListener bound;
 	
+	private static long alDeviceHandle, alContextHandle;
+	
 	/**
 	 * Call to initialize OpenAL and setup 
 	 */
 	public static void init() {
-		try {
-			AL.create();
-			new GameCloseEventListener() {
-				@Override
-				public void onEvent(GameCloseEvent event) {
-					Sound.deleteBuffers();
-					AudioSource.deleteSources();
-					AL.destroy();
-				}
-			}.listen();
-		} catch (LWJGLException e) {
-			System.err.println("Unable to create OpenAL context");
-			e.printStackTrace();
+		alDeviceHandle = alcOpenDevice((ByteBuffer) null);
+		if (alDeviceHandle == 0) {
+			throw new RuntimeException("Unable to create openAL device");
 		}
+		ALCCapabilities alcCapabilities = ALC.createCapabilities(alDeviceHandle);	
+		alContextHandle = alcCreateContext(alDeviceHandle, (IntBuffer) null);
+		if (alContextHandle == 0) {
+			throw new RuntimeException("Unable to create openAL context");
+		}
+		alcMakeContextCurrent(alContextHandle);
+		AL.createCapabilities(alcCapabilities);
+		
+		new GameCloseEventListener() {
+			
+			@Override
+			public void onEvent(GameCloseEvent event) {
+				alcDestroyContext(alContextHandle);
+				alcCloseDevice(alDeviceHandle);
+			}
+			
+		}.listen();
 	}
 	
 	private Vector3f position, velocity;
@@ -107,11 +122,11 @@ public class AudioListener {
 	public void bind() {
 		bound = this;
 		
-		AL10.alListenerf(AL10.AL_GAIN, volume);
-		AL10.alListenerf(AL10.AL_PITCH, pitch);
+		alListenerf(AL_GAIN, volume);
+		alListenerf(AL_PITCH, pitch);
 		
-		AL10.alListener3f(AL10.AL_POSITION, position.x, position.y, position.z);
-		AL10.alListener3f(AL10.AL_VELOCITY, velocity.x, velocity.y, velocity.z);
+		alListener3f(AL_POSITION, position.x, position.y, position.z);
+		alListener3f(AL_VELOCITY, velocity.x, velocity.y, velocity.z);
 	}
 	
 	public static AudioListener getBound() {
@@ -123,6 +138,7 @@ public class AudioListener {
 	}
 
 	public void setPosition(Vector3f position) {
+		if (bound == this) alListener3f(AL_POSITION, position.x, position.y, position.z);
 		this.position = position;
 	}
 
@@ -131,6 +147,7 @@ public class AudioListener {
 	}
 
 	public void setVelocity(Vector3f velocity) {
+		if (bound == this) alListener3f(AL_VELOCITY, velocity.x, velocity.y, velocity.z);
 		this.velocity = velocity;
 	}
 
@@ -139,6 +156,7 @@ public class AudioListener {
 	}
 
 	public void setVolume(float volume) {
+		if (bound == this) alListenerf(AL_GAIN, volume);
 		this.volume = volume;
 	}
 
@@ -147,6 +165,7 @@ public class AudioListener {
 	}
 
 	public void setListenerPitch(float pitch) {
+		if (bound == this) alListenerf(AL_PITCH, pitch);
 		this.pitch = pitch;
 	}
 }

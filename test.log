@@ -1,0 +1,11 @@
+[30 Jan 2021 12:08:09 GMT] Starting test...
+[30 Jan 2021 12:08:09 GMT] Cold init time : 928ms
+[30 Jan 2021 12:08:09 GMT] Cold exit time : 27ms
+[30 Jan 2021 12:08:15 GMT] Average init time : 239.4ms
+[30 Jan 2021 12:08:15 GMT] Average exit time : 23.0ms
+[30 Jan 2021 12:08:22 GMT] Average init time (fullscreen) : 318.35ms
+[30 Jan 2021 12:08:22 GMT] Average exit time (fullscreen) : 57.3ms
+
+[30 Jan 2021 12:08:38 GMT] Average FPS (1 entities, 8 vertices, 12 triangles) : 666.6666666666666
+[30 Jan 2021 12:08:49 GMT] Average FPS (5 entities, 40 vertices, 60 triangles) : 666.6
+[30 Jan 2021 12:08:59 GMT] Average FPS (25 entities, 200 vertices, 300 triangles) : 666.6

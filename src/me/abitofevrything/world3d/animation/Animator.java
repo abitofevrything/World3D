@@ -2,7 +2,7 @@ package me.abitofevrything.world3d.animation;
 
 import me.abitofevrything.world3d.models.animatedModel.AnimatedModel;
 import me.abitofevrything.world3d.models.animatedModel.Joint;
-import me.abitofevrything.world3d.util.DisplayManager;
+import me.abitofevrything.world3d.util.Display;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -80,7 +80,7 @@ public class Animator {
 	 * reset, causing the animation to loop.
 	 */
 	private void increaseAnimationTime() {
-		animationTime += DisplayManager.getFrameTime();
+		animationTime += Display.getFrameTime();
 		if (animationTime > currentAnimation.getLength()) {
 			this.animationTime %= currentAnimation.getLength();
 		}

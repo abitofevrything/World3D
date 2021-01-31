@@ -11,7 +11,7 @@ import me.abitofevrything.world3d.loaders.AnimatedModelLoader;
 import me.abitofevrything.world3d.loaders.AnimationLoader;
 import me.abitofevrything.world3d.models.animatedModel.AnimatedModel;
 import me.abitofevrything.world3d.rendering.RenderTarget;
-import me.abitofevrything.world3d.util.DisplayManager;
+import me.abitofevrything.world3d.util.Display;
 import me.abitofevrything.world3d.util.ResourceFile;
 
 import java.util.ArrayList;
@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -44,9 +43,9 @@ public class World3D {
 	 */
 	public static void init(String title, int displayWidth, int displayHeight, boolean fullscreen) {
 		if (fullscreen) {
-			DisplayManager.createFullScreenDisplay(title, displayWidth, displayHeight);
+			Display.createFullscreen(title, displayWidth, displayHeight);
 		} else {
-			DisplayManager.createDisplay(title, displayWidth, displayHeight);
+			Display.create(title, displayWidth, displayHeight);
 		}
 		Input.init();
 		AudioListener.init();
@@ -58,7 +57,7 @@ public class World3D {
 	 * Terminates the engine
 	 */
 	public static void exit() {
-		DisplayManager.closeDisplay();
+		Display.close();
 	}
 	
 	/**
@@ -146,8 +145,9 @@ public class World3D {
 	}
 	
 	/**
-	 * Updates the engine, triggering an {@link RenderEvent}.
+	 * Updates the engine, triggering an {@link RenderEvent} and exiting if necessary.
 	 * Renderers that want to render this frame should subscribe to that event.
+	 * 
 	 * 
 	 */
 	public static void update() {
@@ -158,9 +158,9 @@ public class World3D {
 		GL11.glClearColor(0, 0, 1, 1);
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 		
-		EventManager.triggerEvent(new RenderEvent("frameRender"));
+		EventManager.triggerEvent(new RenderEvent(RenderEvent.FRAME_RENDER));
 		
-		DisplayManager.update();
+		Display.update();
 		
 		if (Display.isCloseRequested()) {
 			exit();

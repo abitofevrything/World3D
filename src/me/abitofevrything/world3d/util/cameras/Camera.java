@@ -3,8 +3,8 @@ package me.abitofevrything.world3d.util.cameras;
 import me.abitofevrything.world3d.audio.AudioListener;
 import me.abitofevrything.world3d.events.game.GameUpdateEvent;
 import me.abitofevrything.world3d.events.game.GameUpdateEventListener;
+import me.abitofevrything.world3d.util.Display;
 
-import org.lwjgl.opengl.Display;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
 
@@ -48,9 +48,9 @@ public abstract class Camera extends AudioListener {
 		Matrix4f viewMatrix = new Matrix4f();
 		viewMatrix.setIdentity();
 		Matrix4f.rotate((float) Math.toRadians(getRoll()), new Vector3f(0, 0, 1), viewMatrix,  viewMatrix);
-		Matrix4f.rotate((float) Math.toRadians(getListenerPitch()), new Vector3f(1, 0, 0), viewMatrix,  viewMatrix);
+		Matrix4f.rotate((float) Math.toRadians(-getPitch()), new Vector3f(1, 0, 0), viewMatrix,  viewMatrix);
 		Matrix4f.rotate((float) Math.toRadians(getYaw()), new Vector3f(0, 1, 0), viewMatrix,  viewMatrix);
-		Vector3f position = getPosition();
+		Vector3f position = new Vector3f(getPosition()); //getPosition() might not return a new Vector3f each time, so clone it to be safe
 		position.negate(position);
 		Matrix4f.translate(position, viewMatrix, viewMatrix);
 		return viewMatrix;
@@ -88,4 +88,9 @@ public abstract class Camera extends AudioListener {
 	 */
 	public abstract void update();
 
+	@Override
+	public String toString() {
+		return super.toString() + "[x=" + getPosition().x + ", y=" + getPosition().y + ", z=" + getPosition().z + ", roll=" + getRoll() + ", pitch=" + getPitch() + ", yaw=" + getYaw() + "]";
+	}
+	
 }

@@ -3,9 +3,9 @@ package me.abitofevrything.world3d.util.cameras;
 import me.abitofevrything.world3d.events.input.Input;
 import me.abitofevrything.world3d.events.input.MouseDraggedEvent;
 import me.abitofevrything.world3d.events.input.MouseDraggedEventListener;
-import me.abitofevrything.world3d.events.input.MouseScrollEvent;
-import me.abitofevrything.world3d.events.input.MouseScrollEventListener;
-import me.abitofevrything.world3d.util.DisplayManager;
+import me.abitofevrything.world3d.events.input.MouseScrolledEvent;
+import me.abitofevrything.world3d.events.input.MouseScrolledEventListener;
+import me.abitofevrything.world3d.util.Display;
 import me.abitofevrything.world3d.util.SmoothFloat;
 
 import org.lwjgl.util.vector.Vector3f;
@@ -56,9 +56,9 @@ public class SmoothOrbitCamera extends Camera {
 		}.listen();
 		
 		//Listen to mouse scroll events to update distance from target
-		new MouseScrollEventListener() {
+		new MouseScrolledEventListener() {
 			@Override
-			public void onEvent(MouseScrollEvent event) {
+			public void onEvent(MouseScrolledEvent event) {
 				distanceFromPlayer.increaseTarget((distanceFromPlayer.get() + 10) * -event.getDWheel() / 1000);
 				distanceFromPlayer.clamp(5, 300);
 			}
@@ -74,9 +74,9 @@ public class SmoothOrbitCamera extends Camera {
 		Input.setMouseGrabbed(false);
 		
 		//Update the smooth floats
-		distanceFromPlayer.update(DisplayManager.getFrameTime());
-		pitch.update(DisplayManager.getFrameTime());
-		angleAroundPlayer.update(DisplayManager.getFrameTime());
+		distanceFromPlayer.update(Display.getFrameTime());
+		pitch.update(Display.getFrameTime());
+		angleAroundPlayer.update(Display.getFrameTime());
 		
 		//Calculate and update relative position
 		float horizontalDistance = calculateHorizontalDistance();
