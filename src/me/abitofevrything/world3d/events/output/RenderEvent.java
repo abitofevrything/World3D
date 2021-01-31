@@ -10,16 +10,18 @@ import me.abitofevrything.world3d.events.Event;
  */
 public class RenderEvent extends Event {
 	
-	private String type;
+	public static final int FRAME_RENDER = 0, RENDER_TARGET_UPDATE = 1, RENDERER_FINISH = 2, POST_PROCESSING_EFFECT_FINISH = 3;
+
+	private int type;
 	
-	public RenderEvent(String type) {
+	public RenderEvent(int type) {
 		this.type = type;
 	}
 	
 	/**
 	 * @return The type of this render
 	 */
-	public String getType() {
+	public int getType() {
 		return type;
 	}
 	

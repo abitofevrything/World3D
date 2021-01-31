@@ -69,7 +69,7 @@ public class PostProcessingEffect extends EventSubscribable implements Cloneable
 			
 			shader.stop();
 			
-			triggerEventForSubscribers(new RenderEvent("render"));
+			triggerEventForSubscribers(new RenderEvent(RenderEvent.POST_PROCESSING_EFFECT_FINISH));
 			output.finishRender();
 			
 			OpenGlUtils.enableDepthTesting(true);

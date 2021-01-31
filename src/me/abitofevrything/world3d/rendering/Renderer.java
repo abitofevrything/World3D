@@ -104,7 +104,7 @@ public abstract class Renderer<S extends ShaderProgram> extends EventSubscribabl
 		render(renderBatches, camera);
 		shader.stop();
 		
-		super.triggerEventForSubscribers(new RenderEvent("renderer"));
+		super.triggerEventForSubscribers(new RenderEvent(RenderEvent.RENDERER_FINISH));
 		target.finishRender();
 	};
 	
