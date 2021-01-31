@@ -4,8 +4,8 @@ import me.abitofevrything.world3d.entity.Entity;
 import me.abitofevrything.world3d.events.input.Input;
 import me.abitofevrything.world3d.events.input.MouseMovedEvent;
 import me.abitofevrything.world3d.events.input.MouseMovedEventListener;
-import me.abitofevrything.world3d.events.input.MouseScrollEvent;
-import me.abitofevrything.world3d.events.input.MouseScrollEventListener;
+import me.abitofevrything.world3d.events.input.MouseScrolledEvent;
+import me.abitofevrything.world3d.events.input.MouseScrolledEventListener;
 
 import org.lwjgl.util.vector.Vector3f;
 
@@ -40,10 +40,10 @@ public class EntityOrbitCamera extends EntityTrackCamera {
 		super(entity, distance, centerOffset, rx, ry, rz);
 		Input.setMouseGrabbed(true);
 		
-		new MouseScrollEventListener() {
+		new MouseScrolledEventListener() {
 			
 			@Override
-			public void onEvent(MouseScrollEvent event) {
+			public void onEvent(MouseScrolledEvent event) {
 				increaseDistance((getDistance() + 10) * -event.getDWheel() / (1000/SCROLL_SENSITIVITY));
 				if (getDistance() < MIN_DISTANCE) {
 					setDistance(MIN_DISTANCE);

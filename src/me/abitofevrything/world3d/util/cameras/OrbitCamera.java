@@ -2,8 +2,8 @@ package me.abitofevrything.world3d.util.cameras;
 
 import me.abitofevrything.world3d.events.input.MouseDraggedEvent;
 import me.abitofevrything.world3d.events.input.MouseDraggedEventListener;
-import me.abitofevrything.world3d.events.input.MouseScrollEvent;
-import me.abitofevrything.world3d.events.input.MouseScrollEventListener;
+import me.abitofevrything.world3d.events.input.MouseScrolledEvent;
+import me.abitofevrything.world3d.events.input.MouseScrolledEventListener;
 
 import org.lwjgl.util.vector.Vector3f;
 
@@ -56,9 +56,9 @@ public class OrbitCamera extends Camera {
 		}.listen();
 		
 		//Listen to mouse scroll events to update distance from target
-		new MouseScrollEventListener() {
+		new MouseScrolledEventListener() {
 			@Override
-			public void onEvent(MouseScrollEvent event) {
+			public void onEvent(MouseScrolledEvent event) {
 				distanceFromPlayer += (distanceFromPlayer + 10) * -event.getDWheel() / (1000/SCROLL_SENSITIVITY);
 				if (distanceFromPlayer < MIN_DISTANCE) {
 					distanceFromPlayer = MIN_DISTANCE;
