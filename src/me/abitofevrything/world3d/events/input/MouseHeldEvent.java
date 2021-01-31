@@ -8,11 +8,11 @@ import me.abitofevrything.world3d.events.Event;
  * @author abitofevrything
  *
  */
-public class MouseButtonHeldEvent extends Event {
+public class MouseHeldEvent extends Event {
 
 	private int button;
 	
-	public MouseButtonHeldEvent(int button) {
+	public MouseHeldEvent(int button) {
 		this.button = button;
 	}
 	

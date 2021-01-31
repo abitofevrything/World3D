@@ -8,11 +8,11 @@ import me.abitofevrything.world3d.events.Event;
  * @author abitofevrything
  *
  */
-public class MouseScrollEvent extends Event {
+public class MouseScrolledEvent extends Event {
 
 	private int dWheel;
 	
-	public MouseScrollEvent(int dWheel) {
+	public MouseScrolledEvent(int dWheel) {
 		this.dWheel = dWheel;
 	}
 
