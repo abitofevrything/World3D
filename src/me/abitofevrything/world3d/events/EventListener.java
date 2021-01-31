@@ -20,6 +20,15 @@ public abstract class EventListener<E extends Event> {
 	}
 	
 	/**
+	 * Removes this listener from the global listeners list
+	 * 
+	 * @see EventManager#removeEventListener(EventListener)
+	 */
+	public void delete() {
+		EventManager.removeEventListener(this);
+	}
+	
+	/**
 	 * Called whenever the event is triggered on the listening object
 	 * 
 	 * @see EventManager#triggerEvent(Event)
