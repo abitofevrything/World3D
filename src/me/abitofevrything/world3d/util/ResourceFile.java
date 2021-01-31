@@ -14,7 +14,7 @@ import java.io.InputStreamReader;
  */
 public class ResourceFile {
 
-	private static final String FILE_SEPARATOR = File.separator;
+	private static final String FILE_SEPARATOR = File.separator.equals("\\") ? "/" : File.separator;
 
 	private String path;
 	private String name;
