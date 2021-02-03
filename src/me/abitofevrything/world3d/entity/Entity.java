@@ -4,6 +4,7 @@ import me.abitofevrything.World3D;
 import me.abitofevrything.world3d.audio.AudioSource;
 import me.abitofevrything.world3d.events.game.GameUpdateEvent;
 import me.abitofevrything.world3d.events.game.GameUpdateEventListener;
+import me.abitofevrything.world3d.models.Model;
 import me.abitofevrything.world3d.models.animatedModel.AnimatedModel;
 import me.abitofevrything.world3d.util.Utils;
 
@@ -23,7 +24,7 @@ import org.lwjgl.util.vector.Vector3f;
  */
 public class Entity extends AudioSource {
 
-	private AnimatedModel model;
+	private Model model;
 	
 	private Vector3f prevPosition;
 	
@@ -41,7 +42,7 @@ public class Entity extends AudioSource {
 	 * @param rz The z rotation of this entity
 	 * @param scale The scale of this entity
 	 */
-	public Entity(AnimatedModel model, Vector3f position, float rx, float ry, float rz, float scale) {
+	public Entity(Model model, Vector3f position, float rx, float ry, float rz, float scale) {
 		super(position);
 		this.model = model;
 		this.position = position;
@@ -70,7 +71,7 @@ public class Entity extends AudioSource {
 	 * @param model The model for this entity
 	 * @param position The position of this entity
 	 */
-	public Entity(AnimatedModel model, Vector3f position) {
+	public Entity(Model model, Vector3f position) {
 		this(model, position, 0, 0, 0, 1);
 	}
 	
@@ -78,11 +79,11 @@ public class Entity extends AudioSource {
 		return Utils.createTransformationMatrix(this);
 	}
 
-	public AnimatedModel getModel() {
+	public Model getModel() {
 		return model;
 	}
 
-	public void setModel(AnimatedModel model) {
+	public void setModel(Model model) {
 		this.model = model;
 	}
 

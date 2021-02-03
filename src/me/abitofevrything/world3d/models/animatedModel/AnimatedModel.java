@@ -4,6 +4,7 @@ import me.abitofevrything.world3d.animation.Animation;
 import me.abitofevrything.world3d.animation.Animator;
 import me.abitofevrything.world3d.events.output.RenderEvent;
 import me.abitofevrything.world3d.events.output.RenderEventListener;
+import me.abitofevrything.world3d.models.Model;
 import me.abitofevrything.world3d.rendering.opengl.Vao;
 import me.abitofevrything.world3d.textures.Texture;
 
@@ -21,11 +22,7 @@ import org.lwjgl.util.vector.Matrix4f;
  * @author Karl
  *
  */
-public class AnimatedModel {
-
-	// skin
-	private final Vao model;
-	private final Texture texture;
+public class AnimatedModel extends Model {
 
 	// skeleton
 	private final Joint rootJoint;
@@ -56,8 +53,7 @@ public class AnimatedModel {
 	 * 
 	 */
 	public AnimatedModel(Vao model, Texture texture, Joint rootJoint, int jointCount) {
-		this.model = model;
-		this.texture = texture;
+		super(model, texture);
 		this.rootJoint = rootJoint;
 		this.jointCount = jointCount;
 		this.animator = new Animator(this);
@@ -86,35 +82,12 @@ public class AnimatedModel {
 	}
 
 	/**
-	 * @return The VAO containing all the mesh data for this entity.
-	 */
-	public Vao getMesh() {
-		return model;
-	}
-
-	/**
-	 * @return The diffuse texture for this entity.
-	 */
-	public Texture getTexture() {
-		return texture;
-	}
-
-	/**
 	 * @return The root joint of the joint hierarchy. This joint has no parent,
 	 *         and every other joint in the skeleton is a descendant of this
 	 *         joint.
 	 */
 	public Joint getRootJoint() {
 		return rootJoint;
-	}
-
-	/**
-	 * Deletes the OpenGL objects associated with this entity, namely the model
-	 * (VAO) and texture.
-	 */
-	public void delete() {
-		model.delete();
-		texture.delete();
 	}
 
 	/**
