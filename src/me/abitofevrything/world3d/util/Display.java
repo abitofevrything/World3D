@@ -202,4 +202,14 @@ public class Display {
 		return windowHandle;
 	}
 	
+	/**
+	 * Sets the position of the window on the user's screen
+	 * 
+	 * @param x
+	 * @param y
+	 */
+	public static void setPosition(int x, int y) {
+		glfwSetWindowPos(windowHandle, 100, 100);
+	}
+	
 }
