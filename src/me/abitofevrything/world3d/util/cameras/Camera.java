@@ -4,6 +4,7 @@ import me.abitofevrything.world3d.audio.AudioListener;
 import me.abitofevrything.world3d.events.game.GameUpdateEvent;
 import me.abitofevrything.world3d.events.game.GameUpdateEventListener;
 import me.abitofevrything.world3d.util.Display;
+import me.abitofevrything.world3d.util.Utils;
 
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
@@ -39,6 +40,8 @@ public abstract class Camera extends AudioListener {
 				update();
 				setPosition(getPosition());
 				setVelocity(Vector3f.sub(getPosition(), prevPosition, null));
+				Vector3f[] orientation = Utils.createOrientationVectors(getRoll(), getPitch(), getYaw());
+				setOrientation(orientation[0], orientation[1]);
 				prevPosition = getPosition();
 			}
 		}.listen();

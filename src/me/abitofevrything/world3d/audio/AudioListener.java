@@ -56,7 +56,7 @@ public class AudioListener {
 		}.listen();
 	}
 	
-	private Vector3f position, velocity;
+	private Vector3f position, velocity, orientationAt, orientationUp;
 	private float volume, pitch;
 	
 	/**
@@ -64,12 +64,16 @@ public class AudioListener {
 	 * 
 	 * @param position The position of this listener
 	 * @param velocity The velocity of this listener
+	 * @param orientationAt The orientation of this listener
+	 * @param orientationUp The up axis for this listener
 	 * @param volume The volume to play sounds at when using this listener
 	 * @param pitch The pitch to play sounds at when using this listener
 	 */
-	public AudioListener(Vector3f position, Vector3f velocity, float volume, float pitch) {
+	public AudioListener(Vector3f position, Vector3f velocity, Vector3f orientationAt, Vector3f orientationUp, float volume, float pitch) {
 		this.position = position;
 		this.velocity = velocity;
+		this.orientationAt = orientationAt;
+		this.orientationUp = orientationUp;
 		this.volume = volume;
 		this.pitch = pitch;
 	}
@@ -80,17 +84,17 @@ public class AudioListener {
 	 * @param position The position of this listener
 	 */
 	public AudioListener(Vector3f position) {
-		this(position, new Vector3f(0,0,0), 1, 1);
+		this(position, new Vector3f(0,0,0), new Vector3f(0, 0, -1), new Vector3f(0, 1, 0), 1, 1);
 	}
 	
 	/**
 	 * Creates an {@link AudioListener}
 	 * 
 	 * @param position The position of this listener
-	 * @param velocity The velocityof this listener
+	 * @param velocity The velocity of this listener
 	 */
 	public AudioListener(Vector3f position, Vector3f velocity) {
-		this(position, velocity, 1, 1);
+		this(position, velocity, new Vector3f(0, 0, -1), new Vector3f(0, 1, 0), 1, 1);
 	}
 	
 	/**
@@ -101,7 +105,7 @@ public class AudioListener {
 	 * @param volume The volume to play sounds at when using this listener
 	 */
 	public AudioListener(Vector3f position, Vector3f velocity, float volume) {
-		this(position, velocity, volume, 1);
+		this(position, velocity, new Vector3f(0, 0, -1), new Vector3f(0, 1, 0), volume, 1);
 	}
 	
 	/**
@@ -111,8 +115,20 @@ public class AudioListener {
 	 * @param volume The volume to play sounds at when using this listener
 	 */
 	public AudioListener(Vector3f position, float volume) {
-		this(position, new Vector3f(0,0,0), volume, 1);
+		this(position, new Vector3f(0,0,0), new Vector3f(0, 0, -1), new Vector3f(0, 1, 0), volume, 1);
 	}
+	
+	/**
+	 * Creates an {@link AudioListener}
+	 * 
+	 * @param position The position of this listener
+	 * @param velocity The velocity of this listener
+	 * @param orientationAt The orientation of this listener
+	 * @param orientationUp The up axis for this listener
+	 */
+	public AudioListener(Vector3f position, Vector3f velocity, Vector3f orientationAt, Vector3f orientationUp) {
+		this(position, velocity, orientationAt, orientationUp, 1, 1);
+	} 	
 	
 	/**
 	 * Binds this listener to the audio output
@@ -125,8 +141,11 @@ public class AudioListener {
 		alListenerf(AL_GAIN, volume);
 		alListenerf(AL_PITCH, pitch);
 		
-		alListener3f(AL_POSITION, position.x, position.y, position.z);
-		alListener3f(AL_VELOCITY, velocity.x, velocity.y, velocity.z);
+		//OpenAL has an inverted X axis compared to the engine
+		alListener3f(AL_POSITION, -position.x, position.y, position.z);
+		alListener3f(AL_VELOCITY, -velocity.x, velocity.y, velocity.z);
+		
+		alListenerfv(AL_ORIENTATION, new float[] {orientationAt.x, orientationAt.y, orientationAt.z, orientationUp.x, orientationUp.y, orientationUp.z});
 	}
 	
 	public static AudioListener getBound() {
@@ -138,7 +157,7 @@ public class AudioListener {
 	}
 
 	public void setPosition(Vector3f position) {
-		if (bound == this) alListener3f(AL_POSITION, position.x, position.y, position.z);
+		if (bound == this) alListener3f(AL_POSITION, -position.x, position.y, position.z);
 		this.position = position;
 	}
 
@@ -147,7 +166,7 @@ public class AudioListener {
 	}
 
 	public void setVelocity(Vector3f velocity) {
-		if (bound == this) alListener3f(AL_VELOCITY, velocity.x, velocity.y, velocity.z);
+		if (bound == this) alListener3f(AL_VELOCITY, -velocity.x, velocity.y, velocity.z);
 		this.velocity = velocity;
 	}
 
@@ -167,5 +186,18 @@ public class AudioListener {
 	public void setListenerPitch(float pitch) {
 		if (bound == this) alListenerf(AL_PITCH, pitch);
 		this.pitch = pitch;
+	}
+	
+	public Vector3f getOrientationAt() {
+		return orientationAt;
+	}
+	
+	public Vector3f getOrientationUp() {
+		return orientationUp;
+	}
+	
+	public void setOrientation(Vector3f orientationAt, Vector3f orientationUp) {
+		if (bound == this) alListenerfv(AL_ORIENTATION, new float[] {orientationAt.x, orientationAt.y, orientationAt.z, orientationUp.x, orientationUp.y, orientationUp.z});
+		this.orientationAt = orientationAt;
 	}
 }
