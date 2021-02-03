@@ -9,7 +9,7 @@ For any problems or questions, contact Abitofevrything#1422 on Discord or submit
 The main class for interacting with the engine is <code>me.abitofevrything.world3d.World3D</code>.
 
 Calling <code>World3D.init()</code> will start the engine, and calling <code>World3D.update()</code> will update and close the engine if necessary.
-Please note that <code>World3D.exit()</code> will terminate the process if the users requests it, so any cleanup code should be implemented as such :
+Please note that <code>World3D.exit()</code> will terminate the process if the user requests it, so any cleanup code should be implemented as such :
 ```
 new GameCloseEventListener() {
 
