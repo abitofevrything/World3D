@@ -5,7 +5,7 @@ It provides simple functionality for rendering, input, audio and events.
 
 For any problems or questions, contact Abitofevrything#1422 on Discord or submit an issue / pull request on github.
 
-##Running the engine
+## Running the engine
 The main class for interacting with the engine is <code>me.abitofevrything.world3d.World3D</code>.
 
 Calling <code>World3D.init()</code> will start the engine, and calling <code>World3D.update()</code> will update and close the engine if necessary.
